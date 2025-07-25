@@ -8604,8 +8604,8 @@ Source: Fairchild .. BAT54.pdf</description>
 <part name="R_PRESS_TOP" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="4.7kΩ"/>
 <part name="R_PRESS_BOT" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="10kΩ"/>
 <part name="C2" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.1µF"/>
-<part name="CAN_OUT" library="JST PH Library" deviceset="S4B-PH-*" device="SM4-TB"/>
-<part name="PST-F_1_IN" library="JST PH Library" deviceset="S4B-PH-*" device="SM4-TB"/>
+<part name="CAN_X2_5V" library="JST PH Library" deviceset="S4B-PH-*" device="K-S"/>
+<part name="PST-F_1_IN" library="JST PH Library" deviceset="S4B-PH-*" device="K-S"/>
 </parts>
 <sheets>
 <sheet>
@@ -8653,7 +8653,7 @@ Source: Fairchild .. BAT54.pdf</description>
 <attribute name="NAME" x="235.204" y="86.741" size="1.778" layer="95"/>
 <attribute name="VALUE" x="235.204" y="81.661" size="1.778" layer="96"/>
 </instance>
-<instance part="CAN_OUT" gate="G$1" x="147.32" y="165.1" smashed="yes" rot="R180">
+<instance part="CAN_X2_5V" gate="G$1" x="147.32" y="165.1" smashed="yes" rot="R180">
 <attribute name="NAME" x="151.13" y="158.75" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="151.13" y="175.26" size="1.778" layer="96" rot="R180"/>
 </instance>
@@ -8679,13 +8679,11 @@ Source: Fairchild .. BAT54.pdf</description>
 <wire x1="213.36" y1="143.51" x2="256.54" y2="143.51" width="0.1524" layer="91"/>
 <wire x1="256.54" y1="143.51" x2="256.54" y2="146.05" width="0.1524" layer="91"/>
 <junction x="256.54" y="143.51"/>
-<wire x1="205.74" y1="96.52" x2="233.68" y2="96.52" width="0.1524" layer="91"/>
 <wire x1="233.68" y1="96.52" x2="261.62" y2="96.52" width="0.1524" layer="91"/>
 <wire x1="261.62" y1="96.52" x2="261.62" y2="143.51" width="0.1524" layer="91"/>
 <wire x1="261.62" y1="143.51" x2="213.36" y2="143.51" width="0.1524" layer="91"/>
 <junction x="213.36" y="143.51"/>
 <wire x1="233.68" y1="88.9" x2="233.68" y2="96.52" width="0.1524" layer="91"/>
-<junction x="233.68" y="96.52"/>
 <wire x1="266.7" y1="143.51" x2="213.36" y2="143.51" width="0.1524" layer="91"/>
 <wire x1="261.62" y1="66.04" x2="261.62" y2="96.52" width="0.1524" layer="91"/>
 <junction x="261.62" y="96.52"/>
@@ -8694,12 +8692,12 @@ Source: Fairchild .. BAT54.pdf</description>
 <wire x1="266.7" y1="66.04" x2="266.7" y2="143.51" width="0.1524" layer="91"/>
 <pinref part="C1" gate="G$1" pin="1"/>
 <pinref part="C2" gate="G$1" pin="1"/>
-<pinref part="CAN_OUT" gate="G$1" pin="4"/>
-<wire x1="147.32" y1="170.18" x2="269.24" y2="170.18" width="0.1524" layer="91"/>
-<wire x1="269.24" y1="170.18" x2="269.24" y2="146.05" width="0.1524" layer="91"/>
-<wire x1="269.24" y1="146.05" x2="213.36" y2="146.05" width="0.1524" layer="91"/>
-<junction x="213.36" y="146.05"/>
+<wire x1="256.54" y1="170.18" x2="256.54" y2="143.51" width="0.1524" layer="91"/>
+<pinref part="CAN_X2_5V" gate="G$1" pin="4"/>
+<wire x1="256.54" y1="170.18" x2="147.32" y2="170.18" width="0.1524" layer="91"/>
 <pinref part="PST-F_1_IN" gate="G$1" pin="4"/>
+<wire x1="233.68" y1="96.52" x2="205.74" y2="96.52" width="0.1524" layer="91"/>
+<junction x="233.68" y="96.52"/>
 </segment>
 </net>
 <net name="V+" class="0">
@@ -8753,27 +8751,6 @@ Source: Fairchild .. BAT54.pdf</description>
 <label x="222.25" y="130.81" size="1.27" layer="95" xref="yes"/>
 </segment>
 </net>
-<net name="+12V" class="0">
-<segment>
-<pinref part="SV2" gate="1" pin="20"/>
-<wire x1="213.36" y1="153.67" x2="229.87" y2="153.67" width="0.1524" layer="91"/>
-<label x="237.49" y="153.67" size="1.778" layer="95" xref="yes"/>
-<pinref part="SV2" gate="1" pin="19"/>
-<wire x1="229.87" y1="153.67" x2="237.49" y2="153.67" width="0.1524" layer="91"/>
-<wire x1="213.36" y1="151.13" x2="229.87" y2="151.13" width="0.1524" layer="91"/>
-<wire x1="229.87" y1="151.13" x2="229.87" y2="153.67" width="0.1524" layer="91"/>
-<junction x="229.87" y="153.67"/>
-<wire x1="205.74" y1="88.9" x2="210.82" y2="88.9" width="0.1524" layer="91"/>
-<wire x1="210.82" y1="88.9" x2="210.82" y2="81.28" width="0.1524" layer="91"/>
-<wire x1="210.82" y1="81.28" x2="195.58" y2="81.28" width="0.1524" layer="91"/>
-<wire x1="195.58" y1="81.28" x2="195.58" y2="160.02" width="0.1524" layer="91"/>
-<wire x1="195.58" y1="160.02" x2="248.92" y2="160.02" width="0.1524" layer="91"/>
-<wire x1="248.92" y1="160.02" x2="248.92" y2="151.13" width="0.1524" layer="91"/>
-<wire x1="248.92" y1="151.13" x2="213.36" y2="151.13" width="0.1524" layer="91"/>
-<junction x="213.36" y="151.13"/>
-<pinref part="PST-F_1_IN" gate="G$1" pin="1"/>
-</segment>
-</net>
 <net name="CAN1H" class="0">
 <segment>
 <pinref part="SV1" gate="1" pin="1"/>
@@ -8793,11 +8770,11 @@ Source: Fairchild .. BAT54.pdf</description>
 <pinref part="SV1" gate="1" pin="3"/>
 <wire x1="175.26" y1="148.59" x2="166.37" y2="148.59" width="0.1524" layer="91"/>
 <label x="166.37" y="148.59" size="1.27" layer="95" rot="R180" xref="yes"/>
-<pinref part="CAN_OUT" gate="G$1" pin="3"/>
-<wire x1="147.32" y1="167.64" x2="154.94" y2="167.64" width="0.1524" layer="91"/>
 <wire x1="154.94" y1="167.64" x2="154.94" y2="148.59" width="0.1524" layer="91"/>
 <wire x1="154.94" y1="148.59" x2="175.26" y2="148.59" width="0.1524" layer="91"/>
 <junction x="175.26" y="148.59"/>
+<pinref part="CAN_X2_5V" gate="G$1" pin="3"/>
+<wire x1="154.94" y1="167.64" x2="147.32" y2="167.64" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="CAN2L" class="0">
@@ -8805,11 +8782,11 @@ Source: Fairchild .. BAT54.pdf</description>
 <pinref part="SV1" gate="1" pin="4"/>
 <wire x1="175.26" y1="146.05" x2="166.37" y2="146.05" width="0.1524" layer="91"/>
 <label x="166.37" y="146.05" size="1.27" layer="95" rot="R180" xref="yes"/>
-<pinref part="CAN_OUT" gate="G$1" pin="2"/>
-<wire x1="147.32" y1="165.1" x2="152.4" y2="165.1" width="0.1524" layer="91"/>
 <wire x1="152.4" y1="165.1" x2="152.4" y2="146.05" width="0.1524" layer="91"/>
 <wire x1="152.4" y1="146.05" x2="175.26" y2="146.05" width="0.1524" layer="91"/>
 <junction x="175.26" y="146.05"/>
+<pinref part="CAN_X2_5V" gate="G$1" pin="2"/>
+<wire x1="152.4" y1="165.1" x2="147.32" y2="165.1" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="IO4" class="0">
@@ -8959,23 +8936,6 @@ Source: Fairchild .. BAT54.pdf</description>
 <label x="167.64" y="105.41" size="1.27" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
-<net name="+5V" class="0">
-<segment>
-<wire x1="229.87" y1="138.43" x2="238.76" y2="138.43" width="0.1524" layer="91"/>
-<pinref part="SV2" gate="1" pin="15"/>
-<wire x1="213.36" y1="140.97" x2="229.87" y2="140.97" width="0.1524" layer="91"/>
-<wire x1="229.87" y1="140.97" x2="229.87" y2="138.43" width="0.1524" layer="91"/>
-<junction x="229.87" y="138.43"/>
-<pinref part="SV2" gate="1" pin="14"/>
-<wire x1="213.36" y1="138.43" x2="229.87" y2="138.43" width="0.1524" layer="91"/>
-<label x="238.76" y="138.43" size="1.27" layer="95" xref="yes"/>
-<wire x1="147.32" y1="162.56" x2="254" y2="162.56" width="0.1524" layer="91"/>
-<wire x1="254" y1="162.56" x2="254" y2="140.97" width="0.1524" layer="91"/>
-<wire x1="254" y1="140.97" x2="213.36" y2="140.97" width="0.1524" layer="91"/>
-<junction x="213.36" y="140.97"/>
-<pinref part="CAN_OUT" gate="G$1" pin="1"/>
-</segment>
-</net>
 <net name="TEMP_ADC" class="0">
 <segment>
 <wire x1="226.06" y1="76.2" x2="233.68" y2="76.2" width="0.1524" layer="91"/>
@@ -8988,7 +8948,6 @@ Source: Fairchild .. BAT54.pdf</description>
 <wire x1="149.86" y1="76.2" x2="149.86" y2="123.19" width="0.1524" layer="91"/>
 <wire x1="149.86" y1="123.19" x2="175.26" y2="123.19" width="0.1524" layer="91"/>
 <junction x="175.26" y="123.19"/>
-<wire x1="205.74" y1="93.98" x2="226.06" y2="93.98" width="0.1524" layer="91"/>
 <wire x1="226.06" y1="93.98" x2="226.06" y2="76.2" width="0.1524" layer="91"/>
 <pinref part="R_TEMP_TOP" gate="G$1" pin="1"/>
 <wire x1="248.92" y1="78.74" x2="248.92" y2="76.2" width="0.1524" layer="91"/>
@@ -8997,15 +8956,16 @@ Source: Fairchild .. BAT54.pdf</description>
 <wire x1="233.68" y1="81.28" x2="233.68" y2="76.2" width="0.1524" layer="91"/>
 <pinref part="C2" gate="G$1" pin="2"/>
 <pinref part="PST-F_1_IN" gate="G$1" pin="3"/>
+<wire x1="226.06" y1="93.98" x2="205.74" y2="93.98" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$1" class="0">
 <segment>
-<wire x1="205.74" y1="91.44" x2="213.36" y2="91.44" width="0.1524" layer="91"/>
 <wire x1="213.36" y1="91.44" x2="213.36" y2="71.12" width="0.1524" layer="91"/>
 <wire x1="213.36" y1="71.12" x2="180.34" y2="71.12" width="0.1524" layer="91"/>
 <pinref part="R_PRESS_TOP" gate="G$1" pin="2"/>
 <pinref part="PST-F_1_IN" gate="G$1" pin="2"/>
+<wire x1="213.36" y1="91.44" x2="205.74" y2="91.44" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="PRESS_ADC" class="0">
@@ -9034,12 +8994,47 @@ Source: Fairchild .. BAT54.pdf</description>
 <junction x="147.32" y="60.96"/>
 </segment>
 </net>
+<net name="N$2" class="0">
+<segment>
+<pinref part="SV2" gate="1" pin="20"/>
+<wire x1="213.36" y1="153.67" x2="229.87" y2="153.67" width="0.1524" layer="91"/>
+<wire x1="229.87" y1="153.67" x2="237.49" y2="153.67" width="0.1524" layer="91"/>
+<junction x="229.87" y="153.67"/>
+<wire x1="229.87" y1="151.13" x2="229.87" y2="153.67" width="0.1524" layer="91"/>
+<pinref part="SV2" gate="1" pin="19"/>
+<wire x1="213.36" y1="151.13" x2="229.87" y2="151.13" width="0.1524" layer="91"/>
+<label x="237.49" y="153.67" size="1.778" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="+5V" class="0">
+<segment>
+<wire x1="210.82" y1="88.9" x2="210.82" y2="81.28" width="0.1524" layer="91"/>
+<wire x1="210.82" y1="81.28" x2="195.58" y2="81.28" width="0.1524" layer="91"/>
+<wire x1="195.58" y1="81.28" x2="195.58" y2="160.02" width="0.1524" layer="91"/>
+<wire x1="195.58" y1="160.02" x2="251.46" y2="160.02" width="0.1524" layer="91"/>
+<wire x1="229.87" y1="138.43" x2="238.76" y2="138.43" width="0.1524" layer="91"/>
+<pinref part="SV2" gate="1" pin="15"/>
+<wire x1="213.36" y1="140.97" x2="229.87" y2="140.97" width="0.1524" layer="91"/>
+<wire x1="229.87" y1="140.97" x2="229.87" y2="138.43" width="0.1524" layer="91"/>
+<junction x="229.87" y="138.43"/>
+<pinref part="SV2" gate="1" pin="14"/>
+<wire x1="213.36" y1="138.43" x2="229.87" y2="138.43" width="0.1524" layer="91"/>
+<label x="238.76" y="138.43" size="1.27" layer="95" xref="yes"/>
+<wire x1="254" y1="162.56" x2="254" y2="140.97" width="0.1524" layer="91"/>
+<wire x1="254" y1="140.97" x2="213.36" y2="140.97" width="0.1524" layer="91"/>
+<junction x="213.36" y="138.43"/>
+<wire x1="251.46" y1="160.02" x2="251.46" y2="140.97" width="0.1524" layer="91"/>
+<wire x1="251.46" y1="140.97" x2="213.36" y2="140.97" width="0.1524" layer="91"/>
+<junction x="213.36" y="140.97"/>
+<pinref part="CAN_X2_5V" gate="G$1" pin="1"/>
+<wire x1="254" y1="162.56" x2="147.32" y2="162.56" width="0.1524" layer="91"/>
+<pinref part="PST-F_1_IN" gate="G$1" pin="1"/>
+<wire x1="210.82" y1="88.9" x2="205.74" y2="88.9" width="0.1524" layer="91"/>
+</segment>
+</net>
 </nets>
 </sheet>
 </sheets>
-<errors>
-<approved hash="113,1,244.371,170.711,FRAME2,,,,,"/>
-</errors>
 </schematic>
 </drawing>
 <compatibility>
