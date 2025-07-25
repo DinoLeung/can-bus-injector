@@ -2154,6 +2154,14 @@
 <dimension x1="0" y1="72" x2="0" y2="0" x3="-6.74" y3="36" textsize="1.778" layer="47"/>
 <wire x1="42" y1="0" x2="0" y2="0" width="0" layer="20"/>
 <dimension x1="0" y1="72" x2="42" y2="72" x3="21" y3="79" textsize="1.778" layer="47"/>
+<text x="32" y="62" size="1.016" layer="21" rot="R90" align="center-right">GND</text>
+<text x="26" y="62" size="1.016" layer="21" rot="R90" align="center-right">5V</text>
+<text x="28" y="62" size="1.016" layer="21" rot="R90" align="center-right">CAN_L</text>
+<text x="30" y="62" size="1.016" layer="21" rot="R90" align="center-right">CAN_H</text>
+<text x="14" y="62" size="1.016" layer="21" rot="R90" align="center-right">GND</text>
+<text x="8" y="62" size="1.016" layer="21" rot="R90" align="center-right">5V</text>
+<text x="12" y="62" size="1.016" layer="21" rot="R90" align="center-right">TEMP_SIG</text>
+<text x="10" y="62" size="1.016" layer="21" rot="R90" align="center-right">PRESS_SIG </text>
 </plain>
 <libraries>
 <library name="con-lstb" urn="urn:adsk.eagle:library:162">
@@ -3698,23 +3706,23 @@ Please make sure your boards conform to these design rules.</description>
 <attribute name="SPICEPREFIX" value="R" x="27" y="28" size="1.778" layer="28" rot="MR180" display="off"/>
 <attribute name="VALUE" x="26.365" y="30.54" size="1.27" layer="28" rot="MR180"/>
 </element>
-<element name="C1" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.1µF" x="20" y="47" smashed="yes" rot="MR270">
-<attribute name="NAME" x="18.73" y="48.27" size="1.27" layer="26" rot="MR270"/>
-<attribute name="POPULARITY" value="88" x="20" y="47" size="1.778" layer="28" rot="MR270" display="off"/>
-<attribute name="SPICEPREFIX" value="C" x="20" y="47" size="1.778" layer="28" rot="MR270" display="off"/>
-<attribute name="VALUE" x="22.54" y="48.27" size="1.27" layer="28" rot="MR270"/>
+<element name="C1" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.1µF" x="20" y="38" smashed="yes" rot="MR270">
+<attribute name="NAME" x="18.73" y="39.27" size="1.27" layer="26" rot="MR270"/>
+<attribute name="POPULARITY" value="88" x="20" y="38" size="1.778" layer="28" rot="MR270" display="off"/>
+<attribute name="SPICEPREFIX" value="C" x="20" y="38" size="1.778" layer="28" rot="MR270" display="off"/>
+<attribute name="VALUE" x="22.54" y="39.27" size="1.27" layer="28" rot="MR270"/>
 </element>
-<element name="R_PRESS_TOP" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="4.7kΩ" x="7" y="47" smashed="yes" rot="MR90">
-<attribute name="NAME" x="8.27" y="41.365" size="1.27" layer="26" rot="MR90"/>
-<attribute name="POPULARITY" value="86" x="7" y="47" size="1.778" layer="28" rot="MR90" display="off"/>
-<attribute name="SPICEPREFIX" value="R" x="7" y="47" size="1.778" layer="28" rot="MR90" display="off"/>
-<attribute name="VALUE" x="4.46" y="44.365" size="1.27" layer="28" rot="MR90"/>
+<element name="R_PRESS_TOP" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="4.7kΩ" x="7" y="38" smashed="yes" rot="MR90">
+<attribute name="NAME" x="8.27" y="32.365" size="1.27" layer="26" rot="MR90"/>
+<attribute name="POPULARITY" value="86" x="7" y="38" size="1.778" layer="28" rot="MR90" display="off"/>
+<attribute name="SPICEPREFIX" value="R" x="7" y="38" size="1.778" layer="28" rot="MR90" display="off"/>
+<attribute name="VALUE" x="4.46" y="35.365" size="1.27" layer="28" rot="MR90"/>
 </element>
-<element name="R_PRESS_BOT" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="10kΩ" x="14" y="47" smashed="yes" rot="MR90">
-<attribute name="NAME" x="15.27" y="41.365" size="1.27" layer="26" rot="MR90"/>
-<attribute name="POPULARITY" value="86" x="14" y="47" size="1.778" layer="28" rot="MR90" display="off"/>
-<attribute name="SPICEPREFIX" value="R" x="14" y="47" size="1.778" layer="28" rot="MR90" display="off"/>
-<attribute name="VALUE" x="11.46" y="45.365" size="1.27" layer="28" rot="MR90"/>
+<element name="R_PRESS_BOT" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="10kΩ" x="14" y="38" smashed="yes" rot="MR90">
+<attribute name="NAME" x="15.27" y="32.365" size="1.27" layer="26" rot="MR90"/>
+<attribute name="POPULARITY" value="86" x="14" y="38" size="1.778" layer="28" rot="MR90" display="off"/>
+<attribute name="SPICEPREFIX" value="R" x="14" y="38" size="1.778" layer="28" rot="MR90" display="off"/>
+<attribute name="VALUE" x="11.46" y="36.365" size="1.27" layer="28" rot="MR90"/>
 </element>
 <element name="C2" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.1µF" x="27" y="42" smashed="yes" rot="MR0">
 <attribute name="NAME" x="28.27" y="43.27" size="1.27" layer="26" rot="MR0"/>
@@ -3739,7 +3747,7 @@ Please make sure your boards conform to these design rules.</description>
 <contactref element="R_PRESS_BOT" pad="2"/>
 <contactref element="C1" pad="1"/>
 <contactref element="C2" pad="1"/>
-<wire x1="20.125828125" y1="47.824171875" x2="20" y2="47.95" width="0.1524" layer="16"/>
+<wire x1="20.125828125" y1="38.824171875" x2="20" y2="38.95" width="0.1524" layer="16"/>
 <contactref element="CAN_X2_5V" pad="4"/>
 <contactref element="PST-F_1_IN" pad="4"/>
 <wire x1="14" y1="65" x2="14" y2="68" width="0.1524" layer="1"/>
@@ -3752,14 +3760,15 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="37.95" y1="55.05" x2="40.05" y2="55.05" width="0.1524" layer="1"/>
 <wire x1="27.9543" y1="41.95" x2="27.95" y2="42" width="0.1524" layer="16"/>
 <wire x1="28" y1="42.0059375" x2="27.95" y2="42" width="0.1524" layer="16"/>
-<wire x1="14" y1="47.95" x2="20" y2="47.95" width="0.1524" layer="16"/>
-<wire x1="14" y1="47.95" x2="14" y2="65" width="0.1524" layer="16"/>
+<wire x1="14" y1="38.95" x2="20" y2="38.95" width="0.1524" layer="16"/>
+<wire x1="14" y1="38.95" x2="14" y2="65" width="0.1524" layer="16"/>
 <wire x1="27.95" y1="42" x2="32" y2="46.05" width="0.1524" layer="16"/>
 <wire x1="32" y1="46.05" x2="32" y2="52" width="0.1524" layer="16"/>
 <wire x1="32" y1="52" x2="35.05" y2="55.05" width="0.1524" layer="16"/>
 <wire x1="35.05" y1="55.05" x2="40.05" y2="55.05" width="0.1524" layer="16"/>
 <wire x1="40.05" y1="49.97" x2="40.05" y2="52.51" width="0" layer="19" extent="1-1"/>
 <wire x1="40.05" y1="55.05" x2="40.05" y2="52.51" width="0" layer="19" extent="1-1"/>
+<wire x1="14" y1="65" x2="14" y2="38.95" width="0" layer="19"/>
 </signal>
 <signal name="CAN1L">
 <contactref element="SV1" pad="2"/>
@@ -3938,7 +3947,7 @@ Please make sure your boards conform to these design rules.</description>
 <contactref element="PST-F_1_IN" pad="2"/>
 <wire x1="10" y1="65" x2="10" y2="57" width="0.1524" layer="16"/>
 <wire x1="10" y1="57" x2="7" y2="54" width="0.1524" layer="16"/>
-<wire x1="7" y1="54" x2="7" y2="47.95" width="0.1524" layer="16"/>
+<wire x1="7" y1="54" x2="7" y2="38.95" width="0.1524" layer="16"/>
 </signal>
 <signal name="PRESS_ADC">
 <contactref element="SV1" pad="12"/>
@@ -3946,13 +3955,11 @@ Please make sure your boards conform to these design rules.</description>
 <contactref element="R_PRESS_TOP" pad="1"/>
 <contactref element="R_PRESS_BOT" pad="1"/>
 <contactref element="C1" pad="2"/>
-<wire x1="7" y1="46.05" x2="14" y2="46.05" width="0.1524" layer="16"/>
-<wire x1="14" y1="46.05" x2="20" y2="46.05" width="0.1524" layer="16"/>
-<wire x1="20" y1="46.05" x2="20.05" y2="46" width="0.1524" layer="16"/>
-<wire x1="20" y1="42" x2="21" y2="41" width="0.1524" layer="16"/>
-<wire x1="21" y1="41" x2="21" y2="36" width="0.1524" layer="16"/>
-<wire x1="21" y1="36" x2="22.95" y2="34.05" width="0.1524" layer="16"/>
-<wire x1="20" y1="46.05" x2="20" y2="42" width="0.1524" layer="16"/>
+<wire x1="7" y1="37.05" x2="14" y2="37.05" width="0.1524" layer="16"/>
+<wire x1="14" y1="37.05" x2="20" y2="37.05" width="0.1524" layer="16"/>
+<wire x1="20" y1="37.05" x2="20.05" y2="37" width="0.1524" layer="16"/>
+<wire x1="20" y1="37" x2="22.95" y2="34.05" width="0.1524" layer="16"/>
+<wire x1="20" y1="37.05" x2="20" y2="37" width="0.1524" layer="16"/>
 <wire x1="25.9" y1="34.05" x2="22.85" y2="31" width="0.1524" layer="16"/>
 <wire x1="22.95" y1="34.05" x2="25.9" y2="34.05" width="0.1524" layer="16"/>
 <wire x1="3.14" y1="31" x2="1.95" y2="32.19" width="0.1524" layer="16"/>
