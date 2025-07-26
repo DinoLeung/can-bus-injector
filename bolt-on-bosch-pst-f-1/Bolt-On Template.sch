@@ -8599,9 +8599,9 @@ Source: Fairchild .. BAT54.pdf</description>
 <part name="SV2" library="con-lstb" library_urn="urn:adsk.eagle:library:162" deviceset="MA20-1L" device="" package3d_urn="urn:adsk.eagle:package:8358/1"/>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
 <part name="D1" library="diode" library_urn="urn:adsk.eagle:library:210" deviceset="BAT54" device="" package3d_urn="urn:adsk.eagle:package:43389/2"/>
-<part name="R_TEMP_TOP" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="100kΩ"/>
+<part name="R_TEMP_TOP" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="30kΩ"/>
 <part name="C1" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.1µF"/>
-<part name="R_PRESS_TOP" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="4.7kΩ"/>
+<part name="R_PRESS_TOP" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="5.6kΩ"/>
 <part name="R_PRESS_BOT" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="10kΩ"/>
 <part name="C2" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.1µF"/>
 <part name="CAN_X2_5V" library="JST PH Library" deviceset="S4B-PH-*" device="K-S"/>
@@ -8700,7 +8700,7 @@ Source: Fairchild .. BAT54.pdf</description>
 <junction x="233.68" y="96.52"/>
 </segment>
 </net>
-<net name="V+" class="0">
+<net name="+3.3V" class="0">
 <segment>
 <pinref part="SV2" gate="1" pin="12"/>
 <wire x1="213.36" y1="133.35" x2="229.87" y2="133.35" width="0.1524" layer="91"/>
@@ -8994,7 +8994,7 @@ Source: Fairchild .. BAT54.pdf</description>
 <junction x="147.32" y="60.96"/>
 </segment>
 </net>
-<net name="N$2" class="0">
+<net name="12V" class="0">
 <segment>
 <pinref part="SV2" gate="1" pin="20"/>
 <wire x1="213.36" y1="153.67" x2="229.87" y2="153.67" width="0.1524" layer="91"/>
