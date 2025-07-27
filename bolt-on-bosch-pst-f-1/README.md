@@ -76,3 +76,7 @@ flowchart LR
   TEMP_ADC --- GPIO
 
 ```
+
+## JST schematic library
+
+Community library [eagle-libs](https://github.com/triffid/eagle-libs)
