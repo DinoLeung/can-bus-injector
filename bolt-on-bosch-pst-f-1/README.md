@@ -74,7 +74,6 @@ flowchart LR
   TEMP_ADC --- C2 --- GND
   TEMP_ADC --- R_TEMP_TOP --- VCC
   TEMP_ADC --- GPIO
-
 ```
 
 ## JST schematic library
