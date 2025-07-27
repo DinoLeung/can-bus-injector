@@ -47,7 +47,7 @@ void setup() {
 	messageQueue = xQueueCreate(10, sizeof(twai_message_t));
     // start FreeRTOS tasks
     xTaskCreate(can1ReadTask, "CAN1_Read", 4096, NULL, 1, NULL);
-    xTaskCreate(can1ProcessTask, "CAN1_Proc", 4096, NULL, 1, NULL);
+    xTaskCreate(can1ProcessTask, "CAN1_Forward", 4096, NULL, 1, NULL);
 }
 
 void loop() { /* DO NOTHING */ }
@@ -147,7 +147,7 @@ bool writeCan2(twai_message_t message) {
  * FreeRTOS queue `messageQueue`. After draining the buffer, it delays for one tick
  * to yield CPU time to other tasks.
  */
-void can1ReadTask() {
+void can1ReadTask(void* pvParameters) {
 	twai_message_t message;
 
 	while (true) {
@@ -158,7 +158,7 @@ void can1ReadTask() {
 			for (int i = 0; i < message.data_length_code; i++) {
 				Serial.printf("0x%02X", message.data[i]);
 				if (i < message.data_length_code - 1)
-				Serial.print(", ");
+					Serial.print(", ");
 			}
 			Serial.println();
 	
