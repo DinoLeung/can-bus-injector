@@ -230,7 +230,7 @@ void oilPressureTask(void* pvParameters) {
 	constexpr float DIVIDER_RATIO = 10.0f / (5.6f + 10.0f);
 	// Sensor characteristic: 0.5V @ 0 bar, 4.5V @ 10 bar
 	constexpr float ZERO_VOLTAGE = 0.5f;
-	constexpr float FULL_SCALE_VOLTAGE = 0.5f;
+	constexpr float FULL_SCALE_VOLTAGE = 4.5f;
 	constexpr float SENSITIVITY_BAR_PER_VOLT = 10.0f / (FULL_SCALE_VOLTAGE - ZERO_VOLTAGE); // 2.5 bar/V
 	constexpr float BAR_TO_PSI = 14.5038f;
 
