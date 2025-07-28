@@ -35,6 +35,10 @@ MCP_CAN CAN2(&CAN2_SPI, CAN2_CS_PIN);
 // Custom CAN ID
 #define CAN_ID 0x600
 
+// Task interval
+constexpr TickType_t sensorSampleInterval = pdMS_TO_TICKS(25);
+constexpr TickType_t sensorCanMsgInterval = pdMS_TO_TICKS(50);
+
 // Analog Digital Converter const
 constexpr float VREF = 3.3f;
 constexpr float ADC_MAX = 4095.0f;
@@ -46,8 +50,8 @@ static QueueHandle_t messageQueue = nullptr;
 bool setupCan1();
 bool setupCan2();
 bool writeCan2(twai_message_t message);
-void can1ReadTask(void* pvParameters);
-void can1ForwardTask(void* pvParameters);
+void readCan1EnqueueTask(void* pvParameters);
+void forwardCan1ToCan2Task(void* pvParameters);
 void oilPressureTask(void* pvParameters);
 void oilTempTask(void* pvParameters);
 void sensorCanMsgWriterTask(void* pvParameters);
@@ -63,8 +67,8 @@ void setup() {
 	analogSetPinAttenuation(OIL_PRESSURE, ADC_11db);
 	analogSetPinAttenuation(OIL_TEMP, ADC_11db);
 	// start FreeRTOS tasks
-	xTaskCreate(can1ReadTask, "CAN1_Read", 4096, NULL, 1, NULL);
-	xTaskCreate(can1ForwardTask, "CAN1_Forward", 4096, NULL, 1, NULL);
+	xTaskCreate(readCan1EnqueueTask, "CAN1_Read", 4096, NULL, 1, NULL);
+	xTaskCreate(forwardCan1ToCan2Task, "CAN1_Forward", 4096, NULL, 1, NULL);
 	xTaskCreate(oilPressureTask, "Oil_Pres", 2048, NULL, 1, NULL);
 	xTaskCreate(oilTempTask, "Oil_Temp", 2048, NULL, 1, NULL);
 	xTaskCreate(sensorCanMsgWriterTask, "Sensor_CAN_Writer", 2048, NULL, 1, NULL);
@@ -85,14 +89,19 @@ static float rawToVoltage(int raw) {
  * @brief Initialize and start the TWAI (CAN1) driver on the configured pins.
  *
  * This function installs the TWAI driver using the default general, timing,
- * and filter configurations (normal mode, 250 kbit/s, accept all filters),
+ * and filter configurations (read-only mode, 250 kbit/s, accept all filters),
  * then starts the driver. It logs success or failure messages to Serial.
  *
  * @return true if the driver was installed and started successfully.
  * @return false if driver installation or startup fails.
  */
 bool setupCan1() {
-	twai_general_config_t g_config = TWAI_GENERAL_CONFIG_DEFAULT((gpio_num_t)CAN1_TX_PIN, (gpio_num_t)CAN1_RX_PIN, TWAI_MODE_NORMAL);
+	twai_general_config_t g_config =
+		TWAI_GENERAL_CONFIG_DEFAULT(
+			(gpio_num_t)CAN1_TX_PIN,
+			(gpio_num_t)CAN1_RX_PIN,
+			TWAI_MODE_LISTEN_ONLY
+		);
 	twai_timing_config_t t_config = TWAI_TIMING_CONFIG_250KBITS();
 	twai_filter_config_t f_config = TWAI_FILTER_CONFIG_ACCEPT_ALL();
 
@@ -175,7 +184,7 @@ bool writeCan2(twai_message_t message) {
  * FreeRTOS queue `messageQueue`. After draining the buffer, it delays for one tick
  * to yield CPU time to other tasks.
  */
-void can1ReadTask(void* pvParameters) {
+void readCan1EnqueueTask(void* pvParameters) {
 	(void)pvParameters;
 	twai_message_t message;
 	while (true) {
@@ -193,7 +202,7 @@ void can1ReadTask(void* pvParameters) {
 			// emit message into RTOS queue
 			xQueueSend(messageQueue, &message, portMAX_DELAY);
 		}
-		vTaskDelay(1);
+		taskYIELD();
 	}
 }
 
@@ -207,7 +216,7 @@ void can1ReadTask(void* pvParameters) {
  *
  * @param pvParameters Unused parameter for FreeRTOS compatibility.
  */
-void can1ForwardTask(void* pvParameters) {
+void forwardCan1ToCan2Task(void* pvParameters) {
 	(void)pvParameters;
 	twai_message_t message;
 	while (true) {
@@ -234,6 +243,7 @@ void oilPressureTask(void* pvParameters) {
 	constexpr float SENSITIVITY_BAR_PER_VOLT = 10.0f / (FULL_SCALE_VOLTAGE - ZERO_VOLTAGE); // 2.5 bar/V
 	constexpr float BAR_TO_PSI = 14.5038f;
 
+	TickType_t lastWake = xTaskGetTickCount();
 	while (true) {
 		int raw = analogRead(OIL_PRESSURE);
 		float vAdc = rawToVoltage(raw);
@@ -251,7 +261,7 @@ void oilPressureTask(void* pvParameters) {
 
 		g_oilPressurePsi10 = static_cast<uint16_t>(pressurePsi * 10.0f);
 
-		vTaskDelay(pdMS_TO_TICKS(25));
+		vTaskDelayUntil(&lastWake, sensorSampleInterval);
 	}
 }
 
@@ -279,6 +289,7 @@ void oilTempTask(void* pvParameters) {
 	// Compute Beta constant
 	const float BETA = log(R1 / R2) / ((1.0f / T1) - (1.0f / T2));
 
+	TickType_t lastWake = xTaskGetTickCount();
 	while (true) {
 		int raw = analogRead(OIL_TEMP);
 		float vAdc = rawToVoltage(raw);
@@ -294,9 +305,9 @@ void oilTempTask(void* pvParameters) {
 			raw, vAdc, rSensor, tempC
 		);
 
-		g_oilTempC10 = static_cast<uint16_t>(tempC * 10.0f);
+		g_oilTempC10 = static_cast<int16_t>(tempC * 10.0f);
 
-		vTaskDelay(pdMS_TO_TICKS(25));
+		vTaskDelayUntil(&lastWake, sensorSampleInterval);
 	}
 }
 
@@ -314,6 +325,7 @@ void oilTempTask(void* pvParameters) {
  */
 void sensorCanMsgWriterTask(void* pvParameters) {
 	(void)pvParameters;
+	TickType_t lastWake = xTaskGetTickCount();
 	while (true) {
 		twai_message_t msg{};
 		// Pack signed temperature (deci-°C) as two's‑complement uint16_t
@@ -326,6 +338,6 @@ void sensorCanMsgWriterTask(void* pvParameters) {
 		msg.data[2] = uint8_t(rawTemp >> 8);
 		msg.data[3] = uint8_t(rawTemp & 0xFF);
 		writeCan2(msg);
-		vTaskDelay(pdMS_TO_TICKS(50));
+		vTaskDelayUntil(&lastWake, sensorCanMsgInterval);
 	}
 }
