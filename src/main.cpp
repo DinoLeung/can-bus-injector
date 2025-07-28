@@ -10,7 +10,7 @@
 
 // Sensor readings
 volatile uint16_t g_oilPressurePsi10 = 0;
-volatile uint16_t g_oilTempC10 = 0;
+volatile int16_t g_oilTempC10 = 0;
 
 #define LED_1 GPIO_NUM_2
 
@@ -50,7 +50,7 @@ void can1ReadTask(void* pvParameters);
 void can1ForwardTask(void* pvParameters);
 void oilPressureTask(void* pvParameters);
 void oilTempTask(void* pvParameters);
-void sensorCanWriterTask(void* pvParameters);
+void sensorCanMsgWriterTask(void* pvParameters);
 
 void setup() {
 	Serial.begin(115200);
@@ -67,7 +67,7 @@ void setup() {
 	xTaskCreate(can1ForwardTask, "CAN1_Forward", 4096, NULL, 1, NULL);
 	xTaskCreate(oilPressureTask, "Oil_Pres", 2048, NULL, 1, NULL);
 	xTaskCreate(oilTempTask, "Oil_Temp", 2048, NULL, 1, NULL);
-	xTaskCreate(sensorCanWriterTask, "Sensor_CAN_Writer", 2048, NULL, 1, NULL);
+	xTaskCreate(sensorCanMsgWriterTask, "Sensor_CAN_Writer", 2048, NULL, 1, NULL);
 }
 
 void loop() { /* DO NOTHING */ }
@@ -222,7 +222,7 @@ void can1ForwardTask(void* pvParameters) {
  *        computes actual sensor voltage, and calculates oil pressure in bar and psi.
  *
  * Reads ADC from OIL_PRESSURE pin, converts to voltage, undoes voltage divider,
- * converts to pressure (bar and psi), and update `g_oilPressurePsi10` every 50 ms (20 Hz).
+ * converts to pressure (bar and psi), and update `g_oilPressurePsi10` every 25 ms (40 Hz).
  */
 void oilPressureTask(void* pvParameters) {
 	(void)pvParameters;
@@ -251,7 +251,7 @@ void oilPressureTask(void* pvParameters) {
 
 		g_oilPressurePsi10 = static_cast<uint16_t>(pressurePsi * 10.0f);
 
-		vTaskDelay(pdMS_TO_TICKS(50));
+		vTaskDelay(pdMS_TO_TICKS(25));
 	}
 }
 
@@ -260,7 +260,7 @@ void oilPressureTask(void* pvParameters) {
  *        computes sensor resistance, and converts it to temperature in °C.
  *
  * Reads ADC from OIL_TEMP pin, converts to voltage, computes sensor resistance via divider equation,
- * converts resistance to temperature using the Beta parameter method, and update `g_oilTempC10` every 50 ms (20 Hz).
+ * converts resistance to temperature using the Beta parameter method, and update `g_oilTempC10` every 25 ms (40 Hz).
  *
  */
 void oilTempTask(void* pvParameters) {
@@ -296,7 +296,7 @@ void oilTempTask(void* pvParameters) {
 
 		g_oilTempC10 = static_cast<uint16_t>(tempC * 10.0f);
 
-		vTaskDelay(pdMS_TO_TICKS(50));
+		vTaskDelay(pdMS_TO_TICKS(25));
 	}
 }
 
@@ -305,24 +305,26 @@ void oilTempTask(void* pvParameters) {
  *
  * This task constructs a 4-byte CAN frame every 50 ms (20 Hz) that includes:
  * - Bytes 0–1: Oil pressure in deci-psi (uint16_t)
- * - Bytes 2–3: Oil temperature in deci-degrees Celsius (uint16_t)
+ * - Bytes 2–3: Oil temperature in deci-degrees Celsius (int16_t, two's complement)
  *
  * The values are read from shared volatile variables `g_oilPressurePsi10` and `g_oilTempC10`,
  * and sent as a standard 11-bit CAN frame using the identifier defined by `CAN_ID`.
  *
  * @param pvParameters Unused parameter for FreeRTOS compatibility.
  */
-void sensorCanWriterTask(void* pvParameters) {
+void sensorCanMsgWriterTask(void* pvParameters) {
 	(void)pvParameters;
 	while (true) {
 		twai_message_t msg{};
+		// Pack signed temperature (deci-°C) as two's‑complement uint16_t
+		uint16_t rawTemp = static_cast<uint16_t>(g_oilTempC10);
 		msg.identifier = CAN_ID;
 		msg.extd = 0;
 		msg.data_length_code = 4;
 		msg.data[0] = uint8_t(g_oilPressurePsi10 >> 8);
 		msg.data[1] = uint8_t(g_oilPressurePsi10 & 0xFF);
-		msg.data[2] = uint8_t(g_oilTempC10 >> 8);
-		msg.data[3] = uint8_t(g_oilTempC10 & 0xFF);
+		msg.data[2] = uint8_t(rawTemp >> 8);
+		msg.data[3] = uint8_t(rawTemp & 0xFF);
 		writeCan2(msg);
 		vTaskDelay(pdMS_TO_TICKS(50));
 	}
