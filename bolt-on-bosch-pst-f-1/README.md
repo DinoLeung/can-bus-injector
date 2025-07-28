@@ -35,7 +35,7 @@ This daughter-board plugs into the 4-pin JST on the Bosch PST-F1 sensor (0–10 
 
 ### Pressure (0–10 bar → 0.32–2.88 V ADC)
 
-- At 0.5 V (@ 0 bar / 0 PSI) -> ADC = 0.32 V
+- At 0.5 V (@ 0 bar / 0 PSI) -> ADC ≈ 0.32 V
 - At 4.5 V (@ 10 bar / 145 PSI) -> ADC ≈ 2.88 V
 
 ``` mermaid
