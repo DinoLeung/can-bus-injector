@@ -31,3 +31,8 @@ Accurate oil pressure monitoring is critical in performance and track environmen
 ### [Bosch Pressure Sensor Combined PST-F 1](https://www.bosch-motorsport.com/content/downloads/Raceparts/en-GB/54249355.html)
 
 ### [OBDLINK MX+](https://www.obdlink.com/products/obdlink-mxp/)
+
+## License
+
+- **Firmware** (ESP32 code): [GPLv3](./LICENSE-FIRMWARE)
+- **Hardware design** (schematics, PCB layout): [CERN-OHL-S v2](./LICENSE-HARDWARE)
