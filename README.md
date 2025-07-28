@@ -34,5 +34,5 @@ Accurate oil pressure monitoring is critical in performance and track environmen
 
 ## License
 
-- **Firmware** (ESP32 code): [GPLv3](./LICENSE-FIRMWARE)
-- **Hardware design** (schematics, PCB layout): [CERN-OHL-S v2](./LICENSE-HARDWARE)
+- **Firmware** (ESP32 code): [GPLv3](./LICENSE)
+- **Hardware design** (schematics, PCB layout): [CERN-OHL-S v2](./bolt-on-bosch-pst-f-1/LICENSE)
