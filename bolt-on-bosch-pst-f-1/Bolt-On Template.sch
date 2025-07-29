@@ -8611,6 +8611,14 @@ Source: Fairchild .. BAT54.pdf</description>
 <sheet>
 <plain>
 <text x="345.44" y="20.32" size="1.778" layer="97">IO/Sensors</text>
+<text x="142.24" y="170.18" size="1.778" layer="91" align="center-right">GND</text>
+<text x="142.24" y="167.64" size="1.778" layer="91" align="center-right">CAN2H</text>
+<text x="142.24" y="165.1" size="1.778" layer="91" align="center-right">CAN2L</text>
+<text x="142.24" y="162.56" size="1.778" layer="91" align="center-right">+5V</text>
+<text x="200.66" y="96.52" size="1.778" layer="91" align="center-right">GND</text>
+<text x="200.66" y="93.98" size="1.778" layer="91" align="center-right">TEMP_IN</text>
+<text x="200.66" y="91.44" size="1.778" layer="91" align="center-right">PRESS_IN</text>
+<text x="200.66" y="88.9" size="1.778" layer="91" align="center-right">+5V</text>
 </plain>
 <instances>
 <instance part="FRAME2" gate="G$1" x="0" y="0" smashed="yes">
@@ -9009,8 +9017,8 @@ Source: Fairchild .. BAT54.pdf</description>
 <net name="+5V" class="0">
 <segment>
 <wire x1="210.82" y1="88.9" x2="210.82" y2="81.28" width="0.1524" layer="91"/>
-<wire x1="210.82" y1="81.28" x2="195.58" y2="81.28" width="0.1524" layer="91"/>
-<wire x1="195.58" y1="81.28" x2="195.58" y2="160.02" width="0.1524" layer="91"/>
+<wire x1="210.82" y1="81.28" x2="187.96" y2="81.28" width="0.1524" layer="91"/>
+<wire x1="187.96" y1="81.28" x2="187.96" y2="160.02" width="0.1524" layer="91"/>
 <wire x1="229.87" y1="138.43" x2="238.76" y2="138.43" width="0.1524" layer="91"/>
 <pinref part="SV2" gate="1" pin="15"/>
 <wire x1="213.36" y1="140.97" x2="229.87" y2="140.97" width="0.1524" layer="91"/>
@@ -9026,7 +9034,7 @@ Source: Fairchild .. BAT54.pdf</description>
 <wire x1="210.82" y1="88.9" x2="205.74" y2="88.9" width="0.1524" layer="91"/>
 <wire x1="254" y1="162.56" x2="254" y2="138.43" width="0.1524" layer="91"/>
 <wire x1="254" y1="138.43" x2="213.36" y2="138.43" width="0.1524" layer="91"/>
-<wire x1="195.58" y1="160.02" x2="251.46" y2="160.02" width="0.1524" layer="91"/>
+<wire x1="187.96" y1="160.02" x2="251.46" y2="160.02" width="0.1524" layer="91"/>
 <wire x1="251.46" y1="160.02" x2="251.46" y2="140.97" width="0.1524" layer="91"/>
 <wire x1="251.46" y1="140.97" x2="213.36" y2="140.97" width="0.1524" layer="91"/>
 <junction x="213.36" y="140.97"/>

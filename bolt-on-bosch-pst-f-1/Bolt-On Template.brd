@@ -3,7 +3,7 @@
 <eagle version="9.6.2">
 <drawing>
 <settings>
-<setting alwaysvectorfont="yes"/>
+<setting alwaysvectorfont="no"/>
 <setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
@@ -3941,7 +3941,7 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="27" y1="31" x2="26" y2="30" width="0.1524" layer="16"/>
 <wire x1="26" y1="30" x2="26" y2="28" width="0.1524" layer="16"/>
 </signal>
-<signal name="N$1">
+<signal name="PRESS_SIG">
 <contactref element="R_PRESS_TOP" pad="2"/>
 <contactref element="PST-F_1_IN" pad="2"/>
 <wire x1="10" y1="65" x2="10" y2="38.95" width="0.1524" layer="16"/>
