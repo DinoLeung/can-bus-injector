@@ -1,5 +1,5 @@
 #include "sensor.h"
-#include "analog_utils.h"
+#include "sensor_tasks.h"
 #include "globals.h"
 #include <Arduino.h>
 
@@ -8,6 +8,9 @@
 #define TEMPERATURE_PIN GPIO_NUM_36
 
 constexpr float VREF = 3.3f;
+constexpr float ADC_MAX = 4095.0f; // 12-bit analog resolution
+
+// 40Hz
 constexpr TickType_t sensorSampleInterval = pdMS_TO_TICKS(25);
 
 void pressureSamplingTask(void*);
@@ -24,6 +27,15 @@ void startSensorTasks() {
 }
 
 /**
+ * @brief Convert raw ADC reading to voltage (0–3.3V).
+ * @param raw ADC count (0–4095).
+ * @return Voltage corresponding to raw ADC value.
+ */
+float rawToVoltage(int raw) {
+	return raw * VREF / ADC_MAX;
+}
+
+/**
  * @brief FreeRTOS task that samples the analog voltage from the oil pressure sensor,
  *        computes actual sensor voltage, and calculates oil pressure in bar and psi.
  *
@@ -35,9 +47,9 @@ void pressureSamplingTask(void* pvParameters) {
 	// Voltage divider resistors: Rtop = 5.6 kΩ, Rbot = 10 kΩ
 	constexpr float DIVIDER_RATIO = 10.0f / (5.6f + 10.0f);
 	// Sensor characteristic: 0.5V @ 0 bar, 4.5V @ 10 bar
-	constexpr float ZERO_VOLTAGE = 0.5f;
+	constexpr float OFFSET_VOLTAGE = 0.5f;
 	constexpr float FULL_SCALE_VOLTAGE = 4.5f;
-	constexpr float SENSITIVITY_BAR_PER_VOLT = 10.0f / (FULL_SCALE_VOLTAGE - ZERO_VOLTAGE); // 2.5 bar/V
+	constexpr float SENSITIVITY_BAR_PER_VOLT = 10.0f / (FULL_SCALE_VOLTAGE - OFFSET_VOLTAGE); // 2.5 bar/V
 	constexpr float BAR_TO_PSI = 14.5038f;
 
 	TickType_t lastWake = xTaskGetTickCount();
@@ -47,7 +59,7 @@ void pressureSamplingTask(void* pvParameters) {
 		// Compute actual sensor voltage before divider
 		float vSensor = vAdc / DIVIDER_RATIO;
 		// Calculate pressure in bar
-		float pressureBar = (vSensor - ZERO_VOLTAGE) * SENSITIVITY_BAR_PER_VOLT;
+		float pressureBar = (vSensor - OFFSET_VOLTAGE) * SENSITIVITY_BAR_PER_VOLT;
 		// Convert to psi
 		float pressurePsi = pressureBar * BAR_TO_PSI;
 
@@ -74,17 +86,10 @@ void temperatureSamplingTask(void* pvParameters) {
 	(void)pvParameters;
 	// Divider top resistor: 30 kΩ
 	constexpr float R_TOP = 30000.0f;
-	// Calibration points for Beta calculation
-	// -40°C: R = 44 kΩ
-	// -40°C = 233.15K
-	constexpr float T1 = 233.15f;
-	constexpr float R1 = 44000.0f;
-	// 150°C: R = 58 Ω
-	// 150°C = 423.15K
-	constexpr float T2 = 423.15f;
-	constexpr float R2 = 58.0f;
-	// Compute Beta constant
-	const float BETA = log(R1 / R2) / ((1.0f / T1) - (1.0f / T2));
+	// Steinhart–Hart coefficients (from 21-point least-squares fit, see temp_sensor_steinhart_hart.py)
+	constexpr float SH_A = 0.0012885499f;
+	constexpr float SH_B = 2.6171841707e-04f;
+	constexpr float SH_C = 1.6110455605e-07f;
 
 	TickType_t lastWake = xTaskGetTickCount();
 	while (true) {
@@ -92,8 +97,11 @@ void temperatureSamplingTask(void* pvParameters) {
 		float vAdc = rawToVoltage(raw);
 		// Compute sensor resistance from divider equation: Vout = VREF * (R_sensor/(R_top + R_sensor))
 		float rSensor = R_TOP * (vAdc / (VREF - vAdc));
-		// Compute temperature via Beta formula: 1/T = 1/T1 + (1/BETA)*ln(R/R1)
-		float invT = (1.0f / T1) + (log(rSensor / R1) / BETA);
+		// Compute temperature via Steinhart–Hart equation
+		float lnR = log(rSensor);
+		float invT = SH_A
+					+ SH_B * lnR
+					+ SH_C * lnR * lnR * lnR;
 		float tempK = 1.0f / invT;
 		float tempC = tempK - 273.15f;
 

@@ -6,7 +6,7 @@
 #define CAN_ID 0x600
 // message queue for can forwarding task
 static QueueHandle_t messageQueue = nullptr;
-
+// 20Hz
 constexpr TickType_t sensorCanMsgInterval = pdMS_TO_TICKS(50);
 
 static void readCan1EnqueueTask(void*);
@@ -34,8 +34,6 @@ void readCan1EnqueueTask(void* pvParameters) {
 	twai_message_t message;
 	while (true) {
 		while (twai_receive(&message, 0) == ESP_OK) {
-			// Print original CAN1 message
-			// Serial.printf("[CAN1 0x%X]: ", message.identifier);
 			Serial.printf("[CAN1 0x%X %s]: ", message.identifier, message.extd ? "EXT" : "STD");
 			for (int i = 0; i < message.data_length_code; i++) {
 				Serial.printf("0x%02X", message.data[i]);
