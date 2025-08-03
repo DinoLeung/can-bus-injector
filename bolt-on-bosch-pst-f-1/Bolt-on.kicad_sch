@@ -3172,7 +3172,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "030dac52-a941-4304-8c55-8ca60bc60709")
-		(property "Reference" "R_PRESS_TOP1"
+		(property "Reference" "R_PRESS_TOP"
 			(at 199.39 201.93 90)
 			(effects
 				(font
@@ -3224,7 +3224,7 @@
 		(instances
 			(project ""
 				(path "/d642a88c-4bf2-433d-8cf9-b5aeaa3805cb"
-					(reference "R_PRESS_TOP1")
+					(reference "R_PRESS_TOP")
 					(unit 1)
 				)
 			)
@@ -3240,7 +3240,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "1f1f63f9-f69d-4e75-9fd8-6efa8118c855")
-		(property "Reference" "R_TEMP_TOP1"
+		(property "Reference" "R_TEMP_TOP"
 			(at 260.35 193.04 90)
 			(effects
 				(font
@@ -3292,7 +3292,7 @@
 		(instances
 			(project "Bolt-on"
 				(path "/d642a88c-4bf2-433d-8cf9-b5aeaa3805cb"
-					(reference "R_TEMP_TOP1")
+					(reference "R_TEMP_TOP")
 					(unit 1)
 				)
 			)
@@ -3692,7 +3692,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "bb5b8c40-9f64-4071-b4cb-7715dd6bde44")
-		(property "Reference" "R_PRESS_BOT1"
+		(property "Reference" "R_PRESS_BOT"
 			(at 199.39 213.36 90)
 			(effects
 				(font
@@ -3744,7 +3744,7 @@
 		(instances
 			(project "Bolt-on"
 				(path "/d642a88c-4bf2-433d-8cf9-b5aeaa3805cb"
-					(reference "R_PRESS_BOT1")
+					(reference "R_PRESS_BOT")
 					(unit 1)
 				)
 			)
