@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 0)
+  (lib (name "Bolt-on-eagle-import")(type "KiCad")(uri "${KIPRJMOD}/Bolt-on-eagle-import.kicad_sym")(options "")(descr ""))
+)

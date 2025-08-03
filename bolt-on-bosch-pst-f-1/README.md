@@ -60,6 +60,8 @@ flowchart LR
 - At cold (44 kΩ) → ADC ≈ 3.0 V
 - At hot (58 Ω) → ADC ≈ 0.01 V
 
+TODO: Change to 6.8kΩ pull up resistor, and calculate reading using Steinhart-Hart equation.
+
 ``` mermaid
 flowchart LR
   PSTF1_P["PST-F1 Temperature Out<br/>44 kΩ @ –40 °C - 58 Ω @ +150 °C"]
