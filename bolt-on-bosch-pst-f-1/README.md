@@ -44,15 +44,18 @@ flowchart LR
   PRESS_ADC["PRESS_ADC Node"]
   R_PRESS_TOP["R_PRESS_TOP<br/>5.6 kΩ"]
   R_PRESS_BOT["R_PRESS_BOT<br/>10 kΩ"]
-  D1["D1 BAT54<br/>(Cathode→Node, Anode→GND)"]
+  D1["D1<br/>BAT54C"]
   C1["C1 Filter Cap<br/>0.1 µF"]
   GND["GND"]
+  VCC["3.3 V"]
   GPIO["GPIO 35"]
 
   PSTF1_P --- R_PRESS_TOP --- PRESS_ADC
+  VCC ---|cathode| D1
+  D1 ---|anode| PRESS_ADC
   PRESS_ADC --- R_PRESS_BOT --- GND
-  PRESS_ADC --- D1 --- GND
-  PRESS_ADC --- C1 --- GPIO
+  PRESS_ADC --- C1 --- GND
+  PRESS_ADC --> GPIO
 ```
 
 ### Temperature (NTC 58.1 Ω-44.864 kΩ → 0.01–2.9 V ADC)
@@ -66,6 +69,7 @@ flowchart LR
   PSTF1_P["PST-F1 Temperature Out<br/>44 kΩ @ –40 °C - 58 Ω @ +150 °C"]
   R_TEMP_TOP["R_TEMP_TOP<br/>6.8 kΩ"]
   TEMP_ADC["TEMP_ADC Node"]
+  D1["D1<br/>BAT54C"]
   C2["C2 Filter Cap<br/>0.1 µF"]
   GND["GND"]
   VCC["3.3 V"]
@@ -74,5 +78,7 @@ flowchart LR
   PSTF1_P --- TEMP_ADC
   TEMP_ADC --- C2 --- GND
   TEMP_ADC --- R_TEMP_TOP --- VCC
+  VCC ---|cathode| D1
+  D1 ---|anode| TEMP_ADC
   TEMP_ADC --- GPIO
 ```
