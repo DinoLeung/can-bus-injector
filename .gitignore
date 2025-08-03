@@ -7,3 +7,4 @@
 bolt-on-bosch-pst-f-1/*-backups
 bolt-on-bosch-pst-f-1/fp-info-cache
 bolt-on-bosch-pst-f-1/*.kicad_prl
+bolt-on-bosch-pst-f-1/*.lck

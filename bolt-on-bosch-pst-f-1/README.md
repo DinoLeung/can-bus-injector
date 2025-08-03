@@ -31,7 +31,7 @@ This daughter-board plugs into the 4-pin JST on the Bosch PST-F1 sensor (0–10 
 | 4          | GND          | GND                | SV1-pin 16 (GND) |
 
 
-## Analog Signal Scaling
+## Analog Signal Scaling/Divider
 
 ### Pressure (0–10 bar → 0.32–2.88 V ADC)
 
@@ -57,15 +57,14 @@ flowchart LR
 
 ### Temperature (NTC 58.1 Ω-44.864 kΩ → 0.01–3.0 V ADC)
 
-- At cold (44 kΩ) → ADC ≈ 3.0 V
+- At cold (44 kΩ) → ADC ≈ 2.9 V
 - At hot (58 Ω) → ADC ≈ 0.01 V
 
-TODO: Change to 6.8kΩ pull up resistor, and calculate reading using Steinhart-Hart equation.
 
 ``` mermaid
 flowchart LR
   PSTF1_P["PST-F1 Temperature Out<br/>44 kΩ @ –40 °C - 58 Ω @ +150 °C"]
-  R_TEMP_TOP["R_TEMP_TOP<br/>30 kΩ"]
+  R_TEMP_TOP["R_TEMP_TOP<br/>6.8 kΩ"]
   TEMP_ADC["TEMP_ADC Node"]
   C2["C2 Filter Cap<br/>0.1 µF"]
   GND["GND"]

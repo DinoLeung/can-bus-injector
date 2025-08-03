@@ -56,6 +56,13 @@ void pressureSamplingTask(void* pvParameters) {
 	while (true) {
 		int raw = analogRead(PRESSURE_PIN);
 		float vAdc = rawToVoltage(raw);
+
+		if (vAdc <= 0) {
+			g_oilPressurePsi10 = INT16_MAX;
+			vTaskDelayUntil(&lastWake, sensorSampleInterval);
+			continue;
+		}
+
 		// Compute actual sensor voltage before divider
 		float vSensor = vAdc / DIVIDER_RATIO;
 		// Calculate pressure in bar
@@ -85,7 +92,7 @@ void pressureSamplingTask(void* pvParameters) {
 void temperatureSamplingTask(void* pvParameters) {
 	(void)pvParameters;
 	// Divider top resistor: 30 kΩ
-	constexpr float R_TOP = 30000.0f;
+	constexpr float R_TOP = 6800.0f;
 	// Steinhart–Hart coefficients (from 21-point least-squares fit, see temp_sensor_steinhart_hart.py)
 	constexpr float SH_A = 0.0012885499f;
 	constexpr float SH_B = 2.6171841707e-04f;
@@ -95,6 +102,13 @@ void temperatureSamplingTask(void* pvParameters) {
 	while (true) {
 		int raw = analogRead(TEMPERATURE_PIN);
 		float vAdc = rawToVoltage(raw);
+
+		if (vAdc <= 0 || vAdc >= VREF) {
+			g_oilTempC10 = INT16_MAX;
+			vTaskDelayUntil(&lastWake, sensorSampleInterval);
+			continue;
+		}
+
 		// Compute sensor resistance from divider equation: Vout = VREF * (R_sensor/(R_top + R_sensor))
 		float rSensor = R_TOP * (vAdc / (VREF - vAdc));
 		// Compute temperature via Steinhart–Hart equation
