@@ -22,18 +22,25 @@ constexpr float SH_B = 2.6171841707e-04f;
 constexpr float SH_C = 1.6110455605e-07f;
 
 /**
- * @brief Convert raw ADC reading to voltage (0–3.3V).
+ * @brief Convert raw ADC reading to voltage.
+ *
+ * Converts a 12-bit ADC value (0–4095) to its corresponding voltage based on VREF.
+ *
  * @param raw ADC count (0–4095).
- * @return Voltage corresponding to raw ADC value.
+ * @return Voltage in volts (0.0–3.3 V).
  */
 float adcToVoltage(int raw) {
 	return raw * VREF / ADC_MAX;
 }
 
 /**
- * @brief Convert ADC voltage to pressure psi
- * @param ADC voltage
- * @return Pressure reading in psi
+ * @brief Convert ADC voltage to oil pressure in psi.
+ *
+ * Applies the inverse of the voltage divider and sensor linear mapping
+ * to compute the pressure in bar, then converts to psi.
+ *
+ * @param vAdc Voltage from ADC input (after divider), in volts.
+ * @return Pressure in psi. Returns NaN if vAdc is out of range.
  */
 float computePressurePsi(float vAdc) {
     if (vAdc <= 0.0f || vAdc >= VREF) return NAN;
@@ -47,9 +54,13 @@ float computePressurePsi(float vAdc) {
 }
 
 /**
- * @brief Convert ADC voltage to temperature °C
- * @param ADC voltage
- * @return Pressure temperature in °C
+ * @brief Convert ADC voltage to temperature in degrees Celsius.
+ *
+ * Computes thermistor resistance from ADC voltage and applies
+ * the Steinhart–Hart equation to estimate temperature.
+ *
+ * @param vAdc Voltage from ADC input (after divider), in volts.
+ * @return Temperature in °C. Returns NaN if vAdc is out of range.
  */
 float computeTemperatureC(float vAdc) {
     if (vAdc <= 0.0f || vAdc >= VREF) return NAN;

@@ -25,11 +25,14 @@ void startSensorTasks() {
 }
 
 /**
- * @brief FreeRTOS task that samples the analog voltage from the oil pressure sensor,
- *        computes actual sensor voltage, and calculates oil pressure in bar and psi.
+ * @brief FreeRTOS task that samples and processes oil pressure sensor readings.
  *
- * Reads ADC from OIL_PRESSURE pin, converts to voltage, undoes voltage divider,
- * converts to pressure (bar and psi), and update `g_oilPressurePsi10` every 25 ms (40 Hz).
+ * This task runs at 40 Hz. It reads the analog voltage from the oil pressure sensor,
+ * converts it to voltage using adcToVoltage(), then computes pressure in psi via computePressurePsi().
+ * The computed value is scaled to 0.1 psi resolution and stored in g_oilPressurePsi10.
+ * If the ADC voltage is invalid, g_oilPressurePsi10 is set to INT16_MAX.
+ *
+ * @param pvParameters Unused.
  */
 void pressureSamplingTask(void* pvParameters) {
 	(void)pvParameters;
@@ -50,12 +53,14 @@ void pressureSamplingTask(void* pvParameters) {
 }
 
 /**
- * @brief FreeRTOS task that samples the analog voltage from the oil temperature NTC sensor,
- *        computes sensor resistance, and converts it to temperature in °C.
+ * @brief FreeRTOS task that samples and processes oil temperature sensor readings.
  *
- * Reads ADC from OIL_TEMP pin, converts to voltage, computes sensor resistance via divider equation,
- * converts resistance to temperature using the Steinhart–Hart equation, and update `g_oilTempC10` every 25 ms (40 Hz).
+ * This task runs at 40 Hz. It reads the analog voltage from the NTC temperature sensor,
+ * converts it to voltage using adcToVoltage(), then computes temperature in Celsius
+ * via computeTemperatureC(). The computed value is scaled to 0.1 °C resolution and stored in g_oilTempC10.
+ * If the ADC voltage is invalid, g_oilTempC10 is set to INT16_MAX.
  *
+ * @param pvParameters Unused.
  */
 void temperatureSamplingTask(void* pvParameters) {
 	(void)pvParameters;
