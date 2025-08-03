@@ -4,7 +4,7 @@ A small daughter-board that lets you easily attach a Bosch PST-F1 combined press
 
 ## Overview
 
-This daughter-board plugs into the 4-pin JST on the Bosch PST-F1 sensor (0–10 bar pressure + NTC temperature) and routes its outputs into two ESP32 GPIO pins for ADC sampling. It also passes through the ESP32-CAN-X2’s CAN2 signals.
+This daughter-board provides ESP32-CAN-X2 an interface for the Bosch PST-F1 combined pressure and temperature sensor (0–10 bar pressure + NTC temperature). It uses a 4-pin JST connector for sensor inputs. The board also passes through CAN2 signals from the ESP32-CAN-X2.
 
 
 ## Features
@@ -12,7 +12,7 @@ This daughter-board plugs into the 4-pin JST on the Bosch PST-F1 sensor (0–10 
 - **PST-F1 support**: 4-pin input (5 V, PRESS_SIG, TEMP_SIG, GND)
 - **Voltage scaling & protection** on both sensor outputs
 - **0.1 µF decoupling** on analog rails
-- **Pass-through** of both CAN1 and CAN2 channels
+- **Pass-through** of CAN2 channel
 
 
 ## Hardware Requirements
@@ -55,7 +55,7 @@ flowchart LR
   PRESS_ADC --- C1 --- GPIO
 ```
 
-### Temperature (NTC 58.1 Ω-44.864 kΩ → 0.01–3.0 V ADC)
+### Temperature (NTC 58.1 Ω-44.864 kΩ → 0.01–2.9 V ADC)
 
 - At cold (44 kΩ) → ADC ≈ 2.9 V
 - At hot (58 Ω) → ADC ≈ 0.01 V
@@ -76,7 +76,3 @@ flowchart LR
   TEMP_ADC --- R_TEMP_TOP --- VCC
   TEMP_ADC --- GPIO
 ```
-
-## JST schematic library
-
-Community library [eagle-libs](https://github.com/triffid/eagle-libs)

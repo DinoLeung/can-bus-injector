@@ -8,7 +8,7 @@ It taps into the ASC unit (the “GazooKazoo”), which reads CAN data to produc
 ## Motivation
 
 The factory setup leaves much to be desired:
-- The gauge cluster on BRZ lacks a proper, high-resolution oil pressure sensor.
+- The gauge cluster on BRZ lacks a proper, high-resolution oil temperature gauge.
 - Oil pressure data is absent.
 
 This project aims to fill that gap by:
@@ -21,7 +21,7 @@ Accurate oil pressure monitoring is critical in performance and track environmen
 ## Features
 
 - Dual-CAN forwarding: Reads from CAN1 (TWAI), writes to CAN2 (MCP2515).
-- Sensor integration: Adds real-time oil pressure data (20Hz minimum sampling rate).
+- Sensor integration: Adds real-time oil pressure data (40Hz sampling rate, 20Hz update rate).
 - Plug-and-play install: Designed to interface cleanly with the ASC connector and ESP32.
 
 ## Hardware
