@@ -3,7 +3,7 @@
 #include "globals.h"
 
 // Custom CAN ID
-#define CAN_ID 0x600
+#define CAN_ID 0x7e0
 // message queue for can forwarding task
 static QueueHandle_t messageQueue = nullptr;
 // 20Hz

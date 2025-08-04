@@ -1022,7 +1022,7 @@
 				)
 			)
 			(property "Value" "Conn_01x04"
-				(at 0 -8.89 0)
+				(at 11.176 -8.89 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1031,7 +1031,7 @@
 				)
 			)
 			(property "Footprint" "Connector_JST:JST_PH_S4B-PH-K_1x04_P2.00mm_Horizontal"
-				(at 0 0 0)
+				(at -3.048 -11.43 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1049,7 +1049,7 @@
 				)
 			)
 			(property "Description" "Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)"
-				(at 0 0 0)
+				(at -0.254 -13.716 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1791,6 +1791,107 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "power:PWR_FLAG"
+			(power)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "#FLG"
+				(at 0 1.905 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Value" "PWR_FLAG"
+				(at 0 3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Special symbol for telling ERC where power comes from"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "flag power"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "PWR_FLAG_0_0"
+				(pin power_out line
+					(at 0 0 90)
+					(length 0)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(symbol "PWR_FLAG_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 1.27) (xy -1.016 1.905) (xy 0 2.54) (xy 1.016 1.905) (xy 0 1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 	)
 	(text "IO/Sensors"
 		(exclude_from_sim no)
@@ -1840,6 +1941,12 @@
 		(uuid "3a455805-54b5-471d-8e60-b79b0a086b64")
 	)
 	(junction
+		(at 274.32 135.89)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "4438b52d-15a8-4260-af2e-df15e24e9167")
+	)
+	(junction
 		(at 242.57 199.39)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -1850,12 +1957,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "60c24793-b5bf-463f-b836-23c08913ddb3")
-	)
-	(junction
-		(at 274.32 135.89)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "80ba2d44-0bfb-40fd-9572-df79750f41a2")
 	)
 	(junction
 		(at 208.28 219.71)
@@ -1974,6 +2075,16 @@
 			(type default)
 		)
 		(uuid "181d06ac-dfe0-41bf-85fd-a3385043884a")
+	)
+	(wire
+		(pts
+			(xy 274.32 135.89) (xy 274.32 140.97)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "18809fd8-7051-4879-ae0f-88cc2f6342b8")
 	)
 	(wire
 		(pts
@@ -2144,26 +2255,6 @@
 			(type default)
 		)
 		(uuid "410e6fe7-1797-4e66-8893-2339c988594f")
-	)
-	(wire
-		(pts
-			(xy 274.32 135.89) (xy 274.32 140.97)
-		)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(uuid "4932f118-c2d5-4db0-a95a-f510ec607298")
-	)
-	(wire
-		(pts
-			(xy 274.32 133.35) (xy 274.32 135.89)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4b29b28e-6d9c-4049-b031-ae8b67dbf81b")
 	)
 	(wire
 		(pts
@@ -2965,6 +3056,28 @@
 		)
 		(uuid "06eef744-7d36-4d5c-8eff-91ddaec64338")
 	)
+	(label "CAN2-"
+		(at 175.26 120.65 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "1a175e8c-1350-4768-9048-12530d081764")
+		(property "Netclass" "Default"
+			(at 175.26 121.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(label "IO5"
 		(at 240.03 171.45 0)
 		(effects
@@ -3245,6 +3358,28 @@
 		)
 		(uuid "f1621367-ca31-41b7-bfd7-9885ac0e17c8")
 	)
+	(label "CAN2+"
+		(at 177.8 118.11 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "f4ee421c-12c3-49b6-a780-05d55a7eab10")
+		(property "Netclass" "Default"
+			(at 177.8 119.38 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(label "CAN2L"
 		(at 184.15 133.35 180)
 		(effects
@@ -3489,6 +3624,73 @@
 		)
 	)
 	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 274.32 135.89 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "58047c76-75e5-4519-8426-09604e055b15")
+		(property "Reference" "#FLG01"
+			(at 276.225 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 278.13 135.8899 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 274.32 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 274.32 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Special symbol for telling ERC where power comes from"
+			(at 274.32 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "276b952e-7fc0-4337-97ab-6e4f38464358")
+		)
+		(instances
+			(project ""
+				(path "/d642a88c-4bf2-433d-8cf9-b5aeaa3805cb"
+					(reference "#FLG01")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_name "Conn_01x04_1")
 		(lib_id "Connector_Generic:Conn_01x04")
 		(at 223.52 191.77 180)
@@ -3516,7 +3718,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Connector_JST:JST_PH_S4B-PH-K_1x04_P2.00mm_Horizontal"
+		(property "Footprint" "Connector_JST:JST_PH_S4B-PH-SM4-TB_1x04-1MP_P2.00mm_Horizontal"
 			(at 223.52 191.77 0)
 			(effects
 				(font
@@ -3968,7 +4170,7 @@
 			)
 		)
 		(property "Value" "Conn_01x04"
-			(at 166.37 102.87 0)
+			(at 155.194 102.87 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3976,8 +4178,8 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Connector_JST:JST_PH_S4B-PH-K_1x04_P2.00mm_Horizontal"
-			(at 166.37 111.76 0)
+		(property "Footprint" "Connector_JST:JST_PH_S4B-PH-SM4-TB_1x04-1MP_P2.00mm_Horizontal"
+			(at 169.418 100.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3995,7 +4197,7 @@
 			)
 		)
 		(property "Description" "Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 166.37 111.76 0)
+			(at 166.624 98.044 0)
 			(effects
 				(font
 					(size 1.27 1.27)
