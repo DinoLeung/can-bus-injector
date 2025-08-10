@@ -4570,7 +4570,8 @@
 	)
 	(symbol
 		(lib_id "Diode:BAT54C")
-		(at 270.51 205.74 180)
+		(at 270.51 205.74 0)
+		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -4594,7 +4595,7 @@
 			)
 		)
 		(property "Footprint" "Package_TO_SOT_SMD:SOT-23_Handsoldering"
-			(at 268.605 208.915 0)
+			(at 272.415 208.915 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4604,7 +4605,7 @@
 			)
 		)
 		(property "Datasheet" "http://www.diodes.com/_files/datasheets/ds11005.pdf"
-			(at 272.542 205.74 0)
+			(at 268.478 205.74 0)
 			(effects
 				(font
 					(size 1.27 1.27)
