@@ -42,6 +42,7 @@ This daughter-board provides ESP32-CAN-X2 an interface for the Bosch PST-F1 comb
 flowchart LR
   PSTF1_P["PST-F1 Pressure Out<br/>0.5 V @ 0 bar – 4.5 V @ 10 bar"]
   PRESS_ADC["PRESS_ADC Node"]
+  R_SER_PRESS["R_SER_PRESS<br/>220 Ω"]
   R_PRESS_TOP["R_PRESS_TOP<br/>5.6 kΩ"]
   R_PRESS_BOT["R_PRESS_BOT<br/>10 kΩ"]
   D1["D1<br/>BAT54C"]
@@ -51,7 +52,7 @@ flowchart LR
   VCC["3.3 V"]
   GPIO["GPIO 35"]
 
-  PSTF1_P --- R_PRESS_TOP --- PRESS_ADC
+  PSTF1_P --- R_SER_PRESS --- R_PRESS_TOP --- PRESS_ADC
   VCC ---|cathode| D1
   D1 ---|anode| PRESS_ADC
   GND ---|anode| D2
@@ -70,6 +71,7 @@ flowchart LR
 ``` mermaid
 flowchart LR
   PSTF1_P["PST-F1 Temperature Out<br/>44 kΩ @ –40 °C - 58 Ω @ +150 °C"]
+  R_SER_TEMP["R_SER_TEMP<br/>220 Ω"]
   R_TEMP_TOP["R_TEMP_TOP<br/>6.8 kΩ"]
   TEMP_ADC["TEMP_ADC Node"]
   D1["D1<br/>BAT54C"]
@@ -79,7 +81,7 @@ flowchart LR
   VCC["3.3 V"]
   GPIO["GPIO 36"]
 
-  PSTF1_P --- TEMP_ADC
+  PSTF1_P --- R_SER_TEMP --- TEMP_ADC
   TEMP_ADC --- C2 --- GND
   TEMP_ADC --- R_TEMP_TOP --- VCC
   VCC ---|cathode| D1  ---|anode| TEMP_ADC
