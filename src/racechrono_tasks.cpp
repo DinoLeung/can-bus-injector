@@ -15,9 +15,9 @@ static void raceChronoHeartbeatTask(void* pvParameters) {
 	(void)pvParameters;
 	TickType_t lastWake = xTaskGetTickCount();
 	while (true) {
-	if (isRaceChronoClientConnected()) {
-		Serial.println("RaceChrono client is connected");
-	}
-	vTaskDelayUntil(&lastWake, HeartbeatInterval);
+		// if (isRaceChronoClientConnected()) {
+		// 	Serial.println("RaceChrono client is connected");
+		// }
+		vTaskDelayUntil(&lastWake, HeartbeatInterval);
 	}
 }

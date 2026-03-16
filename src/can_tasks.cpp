@@ -14,10 +14,10 @@ static void forwardCan1ToCan2Task(void*);
 static void sensorCanWriterTask(void*);
 
 void startCanTasks() {
-	messageQueue = xQueueCreate(10, sizeof(twai_message_t));
+	// messageQueue = xQueueCreate(10, sizeof(twai_message_t));
 	xTaskCreate(readCan1EnqueueTask, "CAN1_Read", 4096, NULL, 1, NULL);
-	xTaskCreate(forwardCan1ToCan2Task, "CAN1_Read", 4096, NULL, 1, NULL);
-	xTaskCreate(sensorCanWriterTask, "Sensor_CAN_Writer", 2048, NULL, 1, NULL);
+	// xTaskCreate(forwardCan1ToCan2Task, "CAN1_Forward", 4096, NULL, 1, NULL);
+	// xTaskCreate(sensorCanWriterTask, "Sensor_CAN_Writer", 2048, NULL, 1, NULL);
 }
 
 /**
@@ -33,7 +33,7 @@ void readCan1EnqueueTask(void* pvParameters) {
 	(void)pvParameters;
 	twai_message_t message;
 	while (true) {
-		while (twai_receive(&message, 0) == ESP_OK) {
+		while (twai_receive(&message, portMAX_DELAY) == ESP_OK) {
 			Serial.printf("[CAN1 0x%X %s]: ", message.identifier, message.extd ? "EXT" : "STD");
 			for (int i = 0; i < message.data_length_code; i++) {
 				Serial.printf("0x%02X", message.data[i]);
@@ -43,9 +43,10 @@ void readCan1EnqueueTask(void* pvParameters) {
 			Serial.println();
 	
 			// emit message into RTOS queue
-			xQueueSend(messageQueue, &message, portMAX_DELAY);
+			// xQueueSend(messageQueue, &message, portMAX_DELAY);
 		}
-		taskYIELD();
+		// taskYIELD();
+		vTaskDelay(1);
 	}
 }
 

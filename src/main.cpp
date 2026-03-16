@@ -8,13 +8,13 @@
 void setup() {
 	Serial.begin(115200);
 
-	// initCan1();
+	initCan1();
 	// initCan2();
-	initRaceChronoBle();
+	// initRaceChronoBle();
 	
-	// startCanTasks();
+	startCanTasks();
 	// startSensorTasks();
-	startRaceChronoTasks();
+	// startRaceChronoTasks();
 }
 
 void loop() { /* DO NOTHING */ }
