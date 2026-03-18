@@ -19,15 +19,19 @@ struct ScheduledPid {
 // - several others at 50 / 20 / 10 / 16.7 Hz
 ScheduledPid scheduledPids[] = {
   {0x018, 100, 0},
-  {0x140, 100, 0},
+  // {0x140, 100, 0},
   {0x141, 100, 0},
   {0x142, 100, 0},
+  {0x040, 100, 0},
 
-  {0x0D0,  50, 0},
-  {0x0D1,  50, 0},
-  {0x0D2,  50, 0},
-  {0x0D3,  50, 0},
-  {0x0D4,  50, 0},
+  {0x138,  50, 0},
+  {0x139,  50, 0},
+  {0x13B,  50, 0},
+  // {0x0D0,  50, 0},
+  // {0x0D1,  50, 0},
+  // {0x0D2,  50, 0},
+  // {0x0D3,  50, 0},
+  // {0x0D4,  50, 0},
   {0x144,  50, 0},
   {0x152,  50, 0},
   {0x156,  50, 0},
@@ -99,42 +103,94 @@ void generatePayload(uint16_t pid, uint8_t *payload) {
       break;
     }
 
-    case 0x0D0: {
-      // Steering / yaw / acceleration
-      int16_t steering_angle_degrees = -123;
-      int16_t steering_value = steering_angle_degrees * 10;
-      payload[0] = steering_value & 0xFF;
-      payload[1] = (steering_value >> 8) & 0xFF;
-
-      int16_t rotation_clockwise_deg_s = -70;
-      int16_t rotation_value = (int16_t)(-3.14159f * rotation_clockwise_deg_s);
-      payload[2] = rotation_value & 0xFF;
-      payload[3] = (rotation_value >> 8) & 0xFF;
-
-      float lateral_accel_g = 0.3f;
-      payload[6] = (int8_t)(9.80665f * lateral_accel_g / 0.2f);
-
-      float longitudinal_accel_g = 0.2f;
-      payload[7] = (int8_t)(-9.80665f * longitudinal_accel_g / 0.1f);
+    case 0x040: {
+      // engine speed / accelerator pos
+      payload[0] = 0x00;
+      payload[1] = 0x00;
+      payload[2] = 0xCF;
+      payload[3] = 0x82;
+      payload[4] = 0x99;
+      payload[5] = 0x00;
+      payload[6] = 0x00;
+      payload[7] = 0x00;
       break;
     }
 
-    case 0x0D1: {
-      // Speed + brake pressure
-      //
-      // The original example appears to overwrite payload[2] with brake pressure,
-      // so this version avoids clobbering the speed bytes.
-      uint16_t speed_m_s = 10;  // 36 km/h
-      uint16_t speed_value = (uint16_t)(speed_m_s * 63.72f);
-      payload[2] = speed_value & 0xFF;
-      payload[3] = (speed_value >> 8) & 0xFF;
-
-      float brake_pressure_kPa = 1024.0f;
-      uint16_t brake_raw = (uint16_t)(brake_pressure_kPa / 128.0f);
-      payload[0] = brake_raw & 0xFF;
-      payload[1] = (brake_raw >> 8) & 0xFF;
+    case 0x138: {
+      // Steering / yaw
+      payload[0] = 0x00;
+      payload[1] = 0x00;
+      payload[2] = 0xC1;
+      payload[3] = 0xFF;
+      payload[4] = 0xFA;
+      payload[5] = 0x3F;
+      payload[6] = 0x00;
+      payload[7] = 0x00;
       break;
     }
+
+    case 0x139: {
+      // Speed / break pressure
+      payload[0] = 0x00;
+      payload[1] = 0x00;
+      payload[2] = 0xFC;
+      payload[3] = 0xE0;
+      payload[4] = 0x00;
+      payload[5] = 0x01;
+      payload[6] = 0x00;
+      payload[7] = 0x00;
+      break;
+    }
+
+    case 0x13B: {
+      // acceleration
+      payload[0] = 0x00;
+      payload[1] = 0x00;
+      payload[2] = 0x00;
+      payload[3] = 0x00;
+      payload[4] = 0x00;
+      payload[5] = 0x0;
+      payload[6] = 0xFE;
+      payload[7] = 0xFD;
+      break;
+    }
+
+    // case 0x0D0: {
+    //   // Steering / yaw / acceleration
+    //   int16_t steering_angle_degrees = -123;
+    //   int16_t steering_value = steering_angle_degrees * 10;
+    //   payload[0] = steering_value & 0xFF;
+    //   payload[1] = (steering_value >> 8) & 0xFF;
+
+    //   int16_t rotation_clockwise_deg_s = -70;
+    //   int16_t rotation_value = (int16_t)(-3.14159f * rotation_clockwise_deg_s);
+    //   payload[2] = rotation_value & 0xFF;
+    //   payload[3] = (rotation_value >> 8) & 0xFF;
+
+    //   float lateral_accel_g = 0.3f;
+    //   payload[6] = (int8_t)(9.80665f * lateral_accel_g / 0.2f);
+
+    //   float longitudinal_accel_g = 0.2f;
+    //   payload[7] = (int8_t)(-9.80665f * longitudinal_accel_g / 0.1f);
+    //   break;
+    // }
+
+    // case 0x0D1: {
+    //   // Speed + brake pressure
+    //   //
+    //   // The original example appears to overwrite payload[2] with brake pressure,
+    //   // so this version avoids clobbering the speed bytes.
+    //   uint16_t speed_m_s = 10;  // 36 km/h
+    //   uint16_t speed_value = (uint16_t)(speed_m_s * 63.72f);
+    //   payload[2] = speed_value & 0xFF;
+    //   payload[3] = (speed_value >> 8) & 0xFF;
+
+    //   float brake_pressure_kPa = 1024.0f;
+    //   uint16_t brake_raw = (uint16_t)(brake_pressure_kPa / 128.0f);
+    //   payload[0] = brake_raw & 0xFF;
+    //   payload[1] = (brake_raw >> 8) & 0xFF;
+    //   break;
+    // }
 
     case 0x0D2: {
       // Placeholder
@@ -154,38 +210,38 @@ void generatePayload(uint16_t pid, uint8_t *payload) {
       break;
     }
 
-    case 0x0D4: {
-      // Wheel speed sensors / ABS
-      uint16_t value = (uint16_t)(10 * 61);
-      payload[0] = value & 0xFF;
-      payload[1] = (value >> 8) & 0xFF;
+    // case 0x0D4: {
+    //   // Wheel speed sensors / ABS
+    //   uint16_t value = (uint16_t)(10 * 61);
+    //   payload[0] = value & 0xFF;
+    //   payload[1] = (value >> 8) & 0xFF;
 
-      value = (uint16_t)(10 * 62);
-      payload[2] = value & 0xFF;
-      payload[3] = (value >> 8) & 0xFF;
+    //   value = (uint16_t)(10 * 62);
+    //   payload[2] = value & 0xFF;
+    //   payload[3] = (value >> 8) & 0xFF;
 
-      value = (uint16_t)(10 * 63);
-      payload[4] = value & 0xFF;
-      payload[5] = (value >> 8) & 0xFF;
+    //   value = (uint16_t)(10 * 63);
+    //   payload[4] = value & 0xFF;
+    //   payload[5] = (value >> 8) & 0xFF;
 
-      value = (uint16_t)(10 * 64);
-      payload[6] = value & 0xFF;
-      payload[7] = (value >> 8) & 0xFF;
-      break;
-    }
+    //   value = (uint16_t)(10 * 64);
+    //   payload[6] = value & 0xFF;
+    //   payload[7] = (value >> 8) & 0xFF;
+    //   break;
+    // }
 
-    case 0x140: {
-      uint8_t accelerator_pedal_percent = 42;
-      payload[0] = accelerator_pedal_percent * 255 / 100;
+    // case 0x140: {
+    //   uint8_t accelerator_pedal_percent = 42;
+    //   payload[0] = accelerator_pedal_percent * 255 / 100;
 
-      bool clutch_down = false;
-      payload[1] = clutch_down ? 0x80 : 0x00;
+    //   bool clutch_down = false;
+    //   payload[1] = clutch_down ? 0x80 : 0x00;
 
-      uint16_t rpm = 3456;
-      payload[2] = rpm & 0xFF;
-      payload[3] = (rpm >> 8) & 0x3F;
-      break;
-    }
+    //   uint16_t rpm = 3456;
+    //   payload[2] = rpm & 0xFF;
+    //   payload[3] = (rpm >> 8) & 0x3F;
+    //   break;
+    // }
 
     case 0x141: {
       // Placeholder
