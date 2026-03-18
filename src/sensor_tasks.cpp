@@ -1,3 +1,5 @@
+#include <Arduino.h>
+#include <cmath>
 #include "sensor_readings.h"
 #include "sensor_math.h"
 #include "can_bus.h"

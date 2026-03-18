@@ -1,3 +1,5 @@
+#include "freertos/FreeRTOS.h"
+#include "freertos/queue.h"
 #include "can_bus.h"
 #include "can_frame_cache.h"
 
@@ -39,7 +41,7 @@ void readCan1EnqueueTask(void* pvParameters) {
 			// emit message into RTOS queue
 			// xQueueSend(messageQueue, &message, portMAX_DELAY);
 
-			updateCanFrameCache(
+			bool status = updateCanFrameCache(
 				message.identifier,
 				message.extd,
 				message.data_length_code,

@@ -13,11 +13,11 @@ void setup() {
 
 	initCan1();
 	// initCan2();
-	// initRaceChronoBle();
+	initRaceChronoBle();
 	
 	startCanTasks();
 	// startSensorTasks();
-	// startRaceChronoTasks();
+	startRaceChronoTasks();
 }
 
 void loop() { /* DO NOTHING */ }
