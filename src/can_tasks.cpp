@@ -1,5 +1,6 @@
 #include "can_tasks.h"
 #include "can_bus.h"
+#include "can_frame_cache.h"
 #include "globals.h"
 
 // Custom CAN ID
@@ -34,16 +35,23 @@ void readCan1EnqueueTask(void* pvParameters) {
 	twai_message_t message;
 	while (true) {
 		while (twai_receive(&message, portMAX_DELAY) == ESP_OK) {
-			Serial.printf("[CAN1 0x%X %s]: ", message.identifier, message.extd ? "EXT" : "STD");
-			for (int i = 0; i < message.data_length_code; i++) {
-				Serial.printf("0x%02X", message.data[i]);
-				if (i < message.data_length_code - 1)
-					Serial.print(", ");
-			}
-			Serial.println();
+			// Serial.printf("[CAN1 0x%X %s]: ", message.identifier, message.extd ? "EXT" : "STD");
+			// for (int i = 0; i < message.data_length_code; i++) {
+			// 	Serial.printf("0x%02X", message.data[i]);
+			// 	if (i < message.data_length_code - 1)
+			// 		Serial.print(", ");
+			// }
+			// Serial.println();
 	
 			// emit message into RTOS queue
 			// xQueueSend(messageQueue, &message, portMAX_DELAY);
+
+			updateCanFrameCache(
+				message.identifier,
+				message.extd,
+				message.data_length_code,
+				message.data
+			);
 		}
 		taskYIELD();
 	}
