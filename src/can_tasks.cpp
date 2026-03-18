@@ -45,8 +45,7 @@ void readCan1EnqueueTask(void* pvParameters) {
 			// emit message into RTOS queue
 			// xQueueSend(messageQueue, &message, portMAX_DELAY);
 		}
-		// taskYIELD();
-		vTaskDelay(1);
+		taskYIELD();
 	}
 }
 
