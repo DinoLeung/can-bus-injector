@@ -1,7 +1,4 @@
 #include <Arduino.h>
-#include "can_frame_cache.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/semphr.h"
 
 /**
  * @brief Single cached CAN frame entry.

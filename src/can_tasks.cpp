@@ -1,18 +1,11 @@
-#include "can_tasks.h"
 #include "can_bus.h"
 #include "can_frame_cache.h"
-#include "globals.h"
 
-// Custom CAN ID
-#define CAN_ID 0x7e0
 // message queue for can forwarding task
 static QueueHandle_t messageQueue = nullptr;
-// 20Hz
-constexpr TickType_t sensorCanMsgInterval = pdMS_TO_TICKS(50);
 
 static void readCan1EnqueueTask(void*);
 static void forwardCan1ToCan2Task(void*);
-static void sensorCanWriterTask(void*);
 
 void startCanTasks() {
 	// messageQueue = xQueueCreate(10, sizeof(twai_message_t));
@@ -74,36 +67,5 @@ void forwardCan1ToCan2Task(void* pvParameters) {
 		if (xQueueReceive(messageQueue, &message, portMAX_DELAY) == pdTRUE) {
 			writeCan2(message);
 		}
-	}
-}
-
-/**
- * @brief FreeRTOS task that periodically sends combined sensor values to CAN2.
- *
- * This task constructs a 4-byte CAN frame every 50 ms (20 Hz) that includes:
- * - Bytes 0–1: Oil pressure in deci-psi (uint16_t)
- * - Bytes 2–3: Oil temperature in deci-degrees Celsius (int16_t, two's complement)
- *
- * The values are read from shared volatile variables `g_oilPressurePsi10` and `g_oilTempC10`,
- * and sent as a standard 11-bit CAN frame using the identifier defined by `CAN_ID`.
- *
- * @param pvParameters Unused parameter for FreeRTOS compatibility.
- */
-void sensorCanWriterTask(void* pvParameters) {
-	(void)pvParameters;
-	TickType_t lastWake = xTaskGetTickCount();
-	while (true) {
-		twai_message_t msg{};
-		// Pack signed temperature (deci-°C) as two's‑complement uint16_t
-		uint16_t rawTemp = static_cast<uint16_t>(g_oilTempC10);
-		msg.identifier = CAN_ID;
-		msg.extd = 0;
-		msg.data_length_code = 4;
-		msg.data[0] = uint8_t(g_oilPressurePsi10 >> 8);
-		msg.data[1] = uint8_t(g_oilPressurePsi10 & 0xFF);
-		msg.data[2] = uint8_t(rawTemp >> 8);
-		msg.data[3] = uint8_t(rawTemp & 0xFF);
-		writeCan2(msg);
-		vTaskDelayUntil(&lastWake, sensorCanMsgInterval);
 	}
 }

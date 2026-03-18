@@ -1,5 +1,4 @@
 #include "can_bus.h"
-#include <Arduino.h>
 
 // CAN1 (TWAI) Pins
 #define CAN1_RX_PIN GPIO_NUM_6

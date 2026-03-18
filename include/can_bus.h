@@ -1,7 +1,6 @@
 #pragma once
 #include <driver/twai.h>
 #include <mcp_can.h>
-#include <SPI.h>
 
 // Initialize CAN1 (TWAI) in listen-only
 bool initCan1();
