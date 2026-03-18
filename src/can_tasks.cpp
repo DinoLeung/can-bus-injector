@@ -1,3 +1,4 @@
+#include "can_tasks.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include "can_bus.h"

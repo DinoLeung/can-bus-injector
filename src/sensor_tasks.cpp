@@ -1,3 +1,4 @@
+#include "sensor_tasks.h"
 #include <Arduino.h>
 #include <cmath>
 #include "sensor_readings.h"

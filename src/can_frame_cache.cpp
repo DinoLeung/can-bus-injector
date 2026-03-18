@@ -1,3 +1,4 @@
+#include "can_frame_cache.h"
 #include <Arduino.h>
 
 /**

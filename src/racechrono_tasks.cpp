@@ -1,3 +1,4 @@
+#include "racechrono_tasks.h"
 #include <Arduino.h>
 
 // 1Hz
