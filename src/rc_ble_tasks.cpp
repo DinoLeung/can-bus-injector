@@ -5,7 +5,7 @@
 #include "can_frame_cache.h"
 
 // 200Hz
-constexpr TickType_t NotifyInterval = pdMS_TO_TICKS(50);
+constexpr TickType_t NotifyInterval = pdMS_TO_TICKS(5);
 
 static void raceChronoCanFilterRequestTask(void*);
 static void raceChronoCanNotifyTask(void*);
@@ -45,7 +45,7 @@ static void raceChronoCanFilterRequestTask(void* pvParameters) {
 			g_canFilterState.allowAllIntervalMs = request.intervalMs;
 			g_canFilterState.requestedPidCount = 0;
 			Serial.printf(
-				"RaceChrono filter updated: allow all, interval=%u ms\n",
+				"RaceChrono filter updated: allow all: interval=%u ms\n",
 				static_cast<unsigned>(request.intervalMs));
 			break;
 

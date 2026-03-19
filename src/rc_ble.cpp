@@ -36,6 +36,8 @@ class ServerCallbacks : public BLEServerCallbacks {
 	void onDisconnect(BLEServer* server) override {
 		g_connected = false;
 		Serial.println("RaceChrono disconnected");
+		RcFilterRequest msg{RcFilterCommand::DenyAll, 0, 0};
+		xQueueSend(g_filterRequestQueue, &msg, 0);
 		server->getAdvertising()->start();
 	}
 };
