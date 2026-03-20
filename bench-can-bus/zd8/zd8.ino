@@ -27,6 +27,10 @@ ScheduledPid scheduledPids[] = {
   {0x138,  50, 0},
   {0x139,  50, 0},
   {0x13B,  50, 0},
+  {0x146,  50, 0},
+  {0x241,  50, 0},
+  {0x345,  50, 0},
+  {0x390,  50, 0},
   // {0x0D0,  50, 0},
   // {0x0D1,  50, 0},
   // {0x0D2,  50, 0},
@@ -152,6 +156,58 @@ void generatePayload(uint16_t pid, uint8_t *payload) {
       payload[5] = 0x0;
       payload[6] = 0xFE;
       payload[7] = 0xFD;
+      break;
+    }
+
+    case 0x146: {
+      // acceleration
+      payload[0] = 0x00;
+      payload[1] = 0x00;
+      payload[2] = 0x00;
+      payload[3] = 0x00;
+      payload[4] = 0x89;
+      payload[5] = 0x00;
+      payload[6] = 0x00;
+      payload[7] = 0x00;
+      break;
+    }
+
+    case 0x241: {
+      // acceleration
+      payload[0] = 0x00;
+      payload[1] = 0x00;
+      payload[2] = 0x00;
+      payload[3] = 0x00;
+      payload[4] = 0x30;
+      payload[5] = 0x00;
+      payload[6] = 0x00;
+      payload[7] = 0x00;
+      break;
+    }
+
+    case 0x345: {
+      // acceleration
+      payload[0] = 0x00;
+      payload[1] = 0x00;
+      payload[2] = 0x00;
+      payload[3] = 0x84;
+      payload[4] = 0x82;
+      payload[5] = 0x12;
+      payload[6] = 0x00;
+      payload[7] = 0x00;
+      break;
+    }
+    
+    case 0x390: {
+      // acceleration
+      payload[0] = 0x00;
+      payload[1] = 0x00;
+      payload[2] = 0x00;
+      payload[3] = 0x00;
+      payload[4] = 0x90;
+      payload[5] = 0x00;
+      payload[6] = 0x00;
+      payload[7] = 0x00;
       break;
     }
 
