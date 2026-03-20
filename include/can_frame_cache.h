@@ -4,6 +4,8 @@
 #include "freertos/semphr.h"
 #include "rc_ble.h"
 
+static constexpr size_t kMaxCanFrameCacheSize = 128;
+
 /**
  * @brief Single cached CAN frame entry.
  *
@@ -29,8 +31,8 @@ struct CanFrameCacheEntry {
  * across multiple tasks.
  */
 struct CanFrameCache {
-	static constexpr size_t capacity = 256;
-	CanFrameCacheEntry entries[capacity];
+	// static constexpr size_t capacity = 128;
+	CanFrameCacheEntry entries[kMaxCanFrameCacheSize];
 	size_t count;
 	SemaphoreHandle_t mutex;
 

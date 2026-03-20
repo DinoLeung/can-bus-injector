@@ -41,7 +41,7 @@ void initCanFrameCache() {
 		g_canFrameCache.mutex = xSemaphoreCreateMutex();
 	}
 	g_canFrameCache.count = 0;
-	for (size_t i = 0; i < g_canFrameCache.capacity; i++) {
+	for (size_t i = 0; i < kMaxCanFrameCacheSize; i++) {
 		g_canFrameCache.entries[i].valid = false;
 		g_canFrameCache.entries[i].lastUpdatedMs = 0;
 		g_canFrameCache.entries[i].dlc = 0;
@@ -72,7 +72,7 @@ bool updateCanFrameCache(uint32_t identifier, bool isExtended, uint8_t dlc, cons
 
 	CanFrameCacheEntry* entry = findCacheEntry(identifier, isExtended);
 	if (entry == nullptr) {
-		if (g_canFrameCache.count >= g_canFrameCache.capacity) {
+		if (g_canFrameCache.count >= kMaxCanFrameCacheSize) {
 			xSemaphoreGive(g_canFrameCache.mutex);
 			return false;
 		}
