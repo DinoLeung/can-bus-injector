@@ -18,32 +18,28 @@ struct ScheduledPid {
 // - 0x18, 0x140, 0x141, 0x142 at 100 Hz
 // - several others at 50 / 20 / 10 / 16.7 Hz
 ScheduledPid scheduledPids[] = {
-  {0x018, 100, 0},
-  // {0x140, 100, 0},
-  {0x141, 100, 0},
-  {0x142, 100, 0},
+  
+  // somewhat real can data
   {0x040, 100, 0},
-
   {0x138,  50, 0},
   {0x139,  50, 0},
   {0x13B,  50, 0},
   {0x146,  50, 0},
   {0x241,  50, 0},
   {0x345,  50, 0},
+  
+  // placeholders
+  {0x018, 100, 0},
   {0x390,  50, 0},
-  // {0x0D0,  50, 0},
-  // {0x0D1,  50, 0},
-  // {0x0D2,  50, 0},
-  // {0x0D3,  50, 0},
-  // {0x0D4,  50, 0},
+  {0x141, 100, 0},
+  {0x142, 100, 0},
   {0x144,  50, 0},
   {0x152,  50, 0},
   {0x156,  50, 0},
   {0x280,  50, 0},
-
-  {0x282,  17, 0},  // original note: ~16.7 Hz
+  {0x282,  17, 0},
   {0x284,  10, 0},
-  {0x360,  20, 0},
+
 };
 
 // -------------------------------------------------------------------------------------------------
@@ -53,22 +49,6 @@ ScheduledPid scheduledPids[] = {
 static inline uint16_t hzToPeriodUs(uint16_t hz) {
   return 1000000UL / hz;
 }
-
-// bool sendFrame(uint16_t id, const uint8_t *payload, uint8_t len) {
-//   twai_message_t msg = {};
-//   msg.identifier = id;
-//   msg.extd = 0;  // standard 11-bit frame
-//   msg.rtr = 0;
-//   msg.ss = 0;
-//   msg.self = 0;
-//   msg.dlc_non_comp = 0;
-//   msg.data_length_code = len;
-
-//   memcpy(msg.data, payload, len);
-
-//   esp_err_t err = twai_transmit(&msg, 0);
-//   return err == ESP_OK;
-// }
 
 bool sendFrame(uint16_t id, const uint8_t *payload, uint8_t len) {
   twai_message_t msg = {};
@@ -211,43 +191,6 @@ void generatePayload(uint16_t pid, uint8_t *payload) {
       break;
     }
 
-    // case 0x0D0: {
-    //   // Steering / yaw / acceleration
-    //   int16_t steering_angle_degrees = -123;
-    //   int16_t steering_value = steering_angle_degrees * 10;
-    //   payload[0] = steering_value & 0xFF;
-    //   payload[1] = (steering_value >> 8) & 0xFF;
-
-    //   int16_t rotation_clockwise_deg_s = -70;
-    //   int16_t rotation_value = (int16_t)(-3.14159f * rotation_clockwise_deg_s);
-    //   payload[2] = rotation_value & 0xFF;
-    //   payload[3] = (rotation_value >> 8) & 0xFF;
-
-    //   float lateral_accel_g = 0.3f;
-    //   payload[6] = (int8_t)(9.80665f * lateral_accel_g / 0.2f);
-
-    //   float longitudinal_accel_g = 0.2f;
-    //   payload[7] = (int8_t)(-9.80665f * longitudinal_accel_g / 0.1f);
-    //   break;
-    // }
-
-    // case 0x0D1: {
-    //   // Speed + brake pressure
-    //   //
-    //   // The original example appears to overwrite payload[2] with brake pressure,
-    //   // so this version avoids clobbering the speed bytes.
-    //   uint16_t speed_m_s = 10;  // 36 km/h
-    //   uint16_t speed_value = (uint16_t)(speed_m_s * 63.72f);
-    //   payload[2] = speed_value & 0xFF;
-    //   payload[3] = (speed_value >> 8) & 0xFF;
-
-    //   float brake_pressure_kPa = 1024.0f;
-    //   uint16_t brake_raw = (uint16_t)(brake_pressure_kPa / 128.0f);
-    //   payload[0] = brake_raw & 0xFF;
-    //   payload[1] = (brake_raw >> 8) & 0xFF;
-    //   break;
-    // }
-
     case 0x0D2: {
       // Placeholder
       payload[0] = 0x11;
@@ -265,39 +208,6 @@ void generatePayload(uint16_t pid, uint8_t *payload) {
       payload[3] = 0x88;
       break;
     }
-
-    // case 0x0D4: {
-    //   // Wheel speed sensors / ABS
-    //   uint16_t value = (uint16_t)(10 * 61);
-    //   payload[0] = value & 0xFF;
-    //   payload[1] = (value >> 8) & 0xFF;
-
-    //   value = (uint16_t)(10 * 62);
-    //   payload[2] = value & 0xFF;
-    //   payload[3] = (value >> 8) & 0xFF;
-
-    //   value = (uint16_t)(10 * 63);
-    //   payload[4] = value & 0xFF;
-    //   payload[5] = (value >> 8) & 0xFF;
-
-    //   value = (uint16_t)(10 * 64);
-    //   payload[6] = value & 0xFF;
-    //   payload[7] = (value >> 8) & 0xFF;
-    //   break;
-    // }
-
-    // case 0x140: {
-    //   uint8_t accelerator_pedal_percent = 42;
-    //   payload[0] = accelerator_pedal_percent * 255 / 100;
-
-    //   bool clutch_down = false;
-    //   payload[1] = clutch_down ? 0x80 : 0x00;
-
-    //   uint16_t rpm = 3456;
-    //   payload[2] = rpm & 0xFF;
-    //   payload[3] = (rpm >> 8) & 0x3F;
-    //   break;
-    // }
 
     case 0x141: {
       // Placeholder
@@ -359,14 +269,6 @@ void generatePayload(uint16_t pid, uint8_t *payload) {
     case 0x284: {
       // Placeholder
       payload[0] = 0x03;
-      break;
-    }
-
-    case 0x360: {
-      uint8_t oil_temp_c = 100;
-      uint8_t coolant_temp_c = 90;
-      payload[2] = oil_temp_c + 40;
-      payload[3] = coolant_temp_c + 40;
       break;
     }
 
