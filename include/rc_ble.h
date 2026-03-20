@@ -24,7 +24,7 @@ struct RequestedPid {
 	bool active;
 };
 
-struct CanFilterState {
+struct PidFilterState {
 	bool allowAll;
 	uint16_t allowAllIntervalMs;
 	RequestedPid requestedPids[kMaxRequestedPids];
@@ -46,7 +46,7 @@ struct CanFilterState {
 		size_t& outRequestedPidCount) const;
 };
 
-extern CanFilterState g_rcPidFilterState;
+extern PidFilterState g_rcPidFilterState;
 extern QueueHandle_t g_rcPidFilterRequestQueue;
 
 extern BLEServer* g_rcBleServer;

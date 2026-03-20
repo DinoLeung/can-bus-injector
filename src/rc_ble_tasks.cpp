@@ -104,7 +104,7 @@ static void raceChronoCanFilterRequestTask(void* pvParameters) {
  *
  * High-level flow per iteration:
  * 1. Check BLE connection state and early-exit if disconnected.
- * 2. Snapshot the current filter configuration from `CanFilterState` to avoid
+ * 2. Snapshot the current filter configuration from `PidFilterState` to avoid
  *    holding locks during processing.
  * 3. Depending on mode:
  *    - Allow-all: round-robin through the cache using `allowAllCursor`.

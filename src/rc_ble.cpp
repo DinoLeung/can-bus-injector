@@ -10,7 +10,7 @@ static void createCanMainCharacteristic(BLEService* service);
 static void createCanFilterCharacteristic(BLEService* service);
 static void startRaceChronoAdvertising();
 
-CanFilterState g_rcPidFilterState;
+PidFilterState g_rcPidFilterState;
 QueueHandle_t g_rcPidFilterRequestQueue;
 
 BLEServer* g_rcBleServer;
@@ -68,6 +68,49 @@ class FilterCallbacks : public BLECharacteristicCallbacks {
 		}
 	}
 };
+
+/**
+ * @brief Initialise the RaceChrono BLE service and start advertising.
+ *
+ * This function sets up the ESP32 BLE stack, creates the RaceChrono GATT
+ * service (UUID 0x1FF8), and registers the required characteristics:
+ *
+ * - 0x0001 : CAN main characteristic (READ + NOTIFY)
+ * - 0x0002 : CAN filter characteristic (WRITE)
+ *
+ * After the service is started the device begins advertising so the
+ * RaceChrono mobile app can discover and connect to it.
+ *
+ * @return true when BLE initialisation completes successfully.
+ */
+bool initRaceChronoBle() {
+	BLEDevice::init(kDeviceName);
+
+	g_rcBleServer = BLEDevice::createServer();
+	g_rcBleServer->setCallbacks(new ServerCallbacks());
+
+	// Default to deny all mode
+	g_rcPidFilterState.mutex = xSemaphoreCreateMutex();
+	if (g_rcPidFilterState.mutex == nullptr) {
+		Serial.println("Failed to create RaceChrono filter mutex");
+		return false;
+	}
+	g_rcPidFilterState.allowAll = false;
+	g_rcPidFilterState.allowAllIntervalMs = 0;
+	g_rcPidFilterState.requestedPidCount = 0;
+
+	g_rcPidFilterRequestQueue = xQueueCreate(kFilterRequestQueueSize, sizeof(RcFilterRequest));
+
+	auto* service = createRaceChronoService();
+	createCanMainCharacteristic(service);
+	createCanFilterCharacteristic(service);
+
+	service->start();
+	startRaceChronoAdvertising();
+
+	Serial.println("RaceChrono BLE ready");
+	return true;
+}
 
 /**
  * @brief Create the primary RaceChrono BLE service.
@@ -129,49 +172,6 @@ static void startRaceChronoAdvertising() {
 }
 
 /**
- * @brief Initialise the RaceChrono BLE service and start advertising.
- *
- * This function sets up the ESP32 BLE stack, creates the RaceChrono GATT
- * service (UUID 0x1FF8), and registers the required characteristics:
- *
- * - 0x0001 : CAN main characteristic (READ + NOTIFY)
- * - 0x0002 : CAN filter characteristic (WRITE)
- *
- * After the service is started the device begins advertising so the
- * RaceChrono mobile app can discover and connect to it.
- *
- * @return true when BLE initialisation completes successfully.
- */
-bool initRaceChronoBle() {
-	BLEDevice::init(kDeviceName);
-
-	g_rcBleServer = BLEDevice::createServer();
-	g_rcBleServer->setCallbacks(new ServerCallbacks());
-
-	// Default to deny all mode
-	g_rcPidFilterState.mutex = xSemaphoreCreateMutex();
-	if (g_rcPidFilterState.mutex == nullptr) {
-		Serial.println("Failed to create RaceChrono filter mutex");
-		return false;
-	}
-	g_rcPidFilterState.allowAll = false;
-	g_rcPidFilterState.allowAllIntervalMs = 0;
-	g_rcPidFilterState.requestedPidCount = 0;
-
-	g_rcPidFilterRequestQueue = xQueueCreate(kFilterRequestQueueSize, sizeof(RcFilterRequest));
-
-	auto* service = createRaceChronoService();
-	createCanMainCharacteristic(service);
-	createCanFilterCharacteristic(service);
-
-	service->start();
-	startRaceChronoAdvertising();
-
-	Serial.println("RaceChrono BLE ready");
-	return true;
-}
-
-/**
  * @brief Mark a requested PID as having just been transmitted.
  *
  * This updates the scheduling state for a specific requested PID by
@@ -185,7 +185,7 @@ bool initRaceChronoBle() {
  * @param index Index of the requested PID in the internal array.
  * @param now   Current time in milliseconds (typically from `millis()`).
  */
-void CanFilterState::markPidSent(size_t index, uint32_t now) {
+void PidFilterState::markPidSent(size_t index, uint32_t now) {
 	if (xSemaphoreTake(mutex, portMAX_DELAY) != pdTRUE) {
 		return;
 	}
@@ -214,7 +214,7 @@ void CanFilterState::markPidSent(size_t index, uint32_t now) {
  * @param outRequestedPidIndex Output index of the selected requested PID.
  * @return true if a due requested PID was found, false otherwise.
  */
-bool CanFilterState::nextDuePid(
+bool PidFilterState::nextDuePid(
 	uint32_t now,
 	size_t& requestedPidCursor,
 	RequestedPid& outRequestedPid,
@@ -271,7 +271,7 @@ bool CanFilterState::nextDuePid(
  * @param outRequestedPids       Output array to receive requested PID entries.
  * @param outRequestedPidCount   Output number of valid requested PIDs.
  */
-void CanFilterState::snapshot(
+void PidFilterState::snapshot(
 	bool& outAllowAll,
 	uint16_t& outAllowAllIntervalMs,
 	RequestedPid (&outRequestedPids)[kMaxRequestedPids],

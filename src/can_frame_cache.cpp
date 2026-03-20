@@ -149,7 +149,7 @@ bool CanFrameCache::getNextCachedFrame(
  * outputs.
  *
  * Due-time and round-robin scheduling decisions are handled by
- * `CanFilterState::nextDuePid()`. This function is only responsible for
+ * `PidFilterState::nextDuePid()`. This function is only responsible for
  * cache lookup.
  *
  * The operation is protected by the cache mutex to ensure safe concurrent
