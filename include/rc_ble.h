@@ -30,15 +30,27 @@ struct CanFilterState {
 	RequestedPid requestedPids[kMaxRequestedPids];
 	size_t requestedPidCount;
 	SemaphoreHandle_t mutex;
+	
+	void markPidSent(size_t index, uint32_t now);
+	
+	bool nextDuePid(
+		uint32_t now,
+		size_t& requestedPidCursor,
+		RequestedPid& outRequestedPid,
+		size_t& outRequestedPidIndex) const;
+
+	void snapshot(
+		bool& outAllowAll,
+		uint16_t& outAllowAllIntervalMs,
+		RequestedPid (&outRequestedPids)[kMaxRequestedPids],
+		size_t& outRequestedPidCount) const;
 };
 
-extern CanFilterState g_canFilterState;
-extern QueueHandle_t g_filterRequestQueue;
+extern CanFilterState g_rcPidFilterState;
+extern QueueHandle_t g_rcPidFilterRequestQueue;
 
-extern BLEServer* g_server;
-extern BLECharacteristic* g_mainChar;
-extern volatile bool g_connected;
+extern BLEServer* g_rcBleServer;
+extern BLECharacteristic* g_rcBleMainChar;
+extern volatile bool g_rcBleConnected;
 
 bool initRaceChronoBle();
-bool isRaceChronoClientConnected();
-void raceChronoStartAdvertising();

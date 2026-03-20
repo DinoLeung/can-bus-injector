@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
+#include "rc_ble.h"
 
 /**
  * @brief Single cached CAN frame entry.
@@ -32,6 +33,16 @@ struct CanFrameCache {
 	CanFrameCacheEntry entries[capacity];
 	size_t count;
 	SemaphoreHandle_t mutex;
+
+	bool getNextCachedFrame(
+		size_t& cursor,
+		uint32_t& outFramePid,
+		uint8_t (&outFrameData)[8]) const;
+
+	bool getNextRequestedCachedFrame(
+		const RequestedPid& requestedPid,
+		uint32_t& outFramePid,
+		uint8_t (&outFrameData)[8]) const;
 };
 
 extern CanFrameCache g_canFrameCache;

@@ -10,12 +10,12 @@ static void createCanMainCharacteristic(BLEService* service);
 static void createCanFilterCharacteristic(BLEService* service);
 static void startRaceChronoAdvertising();
 
-CanFilterState g_canFilterState;
-QueueHandle_t g_filterRequestQueue;
+CanFilterState g_rcPidFilterState;
+QueueHandle_t g_rcPidFilterRequestQueue;
 
-BLEServer* g_server;
-BLECharacteristic* g_mainChar;
-volatile bool g_connected;
+BLEServer* g_rcBleServer;
+BLECharacteristic* g_rcBleMainChar;
+volatile bool g_rcBleConnected;
 
 /**
  * @brief BLE server callbacks used to track RaceChrono connection state.
@@ -29,15 +29,15 @@ volatile bool g_connected;
 class ServerCallbacks : public BLEServerCallbacks {
 	public:
 	void onConnect(BLEServer*) override {
-		g_connected = true;
+		g_rcBleConnected = true;
 		Serial.println("RaceChrono connected");
 	}
 
 	void onDisconnect(BLEServer* server) override {
-		g_connected = false;
+		g_rcBleConnected = false;
 		Serial.println("RaceChrono disconnected");
 		RcFilterRequest msg{RcFilterCommand::DenyAll, 0, 0};
-		xQueueSend(g_filterRequestQueue, &msg, 0);
+		xQueueSend(g_rcPidFilterRequestQueue, &msg, 0);
 		server->getAdvertising()->start();
 	}
 };
@@ -63,7 +63,7 @@ class FilterCallbacks : public BLECharacteristicCallbacks {
 			return;
 		}
 
-		if (xQueueSend(g_filterRequestQueue, &msg, 0) != pdTRUE) {
+		if (xQueueSend(g_rcPidFilterRequestQueue, &msg, 0) != pdTRUE) {
 			Serial.println("RaceChrono filter queue full");
 		}
 	}
@@ -78,7 +78,7 @@ class FilterCallbacks : public BLECharacteristicCallbacks {
  * @return Pointer to the created BLE service.
  */
 static BLEService* createRaceChronoService() {
-	return g_server->createService(BLEUUID(kServiceUuid));
+	return g_rcBleServer->createService(BLEUUID(kServiceUuid));
 }
 
 /**
@@ -92,13 +92,13 @@ static BLEService* createRaceChronoService() {
  * @param service The RaceChrono BLE service that will own the characteristic.
  */
 static void createCanMainCharacteristic(BLEService* service) {
-	g_mainChar = service->createCharacteristic(
+	g_rcBleMainChar = service->createCharacteristic(
 		BLEUUID(kCanMainCharUuid),
 		BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-	g_mainChar->addDescriptor(new BLE2902());
+	g_rcBleMainChar->addDescriptor(new BLE2902());
 
 	uint8_t initValue[4] = {0, 0, 0, 0};
-	g_mainChar->setValue(initValue, sizeof(initValue));
+	g_rcBleMainChar->setValue(initValue, sizeof(initValue));
 }
 
 /**
@@ -145,20 +145,20 @@ static void startRaceChronoAdvertising() {
 bool initRaceChronoBle() {
 	BLEDevice::init(kDeviceName);
 
-	g_server = BLEDevice::createServer();
-	g_server->setCallbacks(new ServerCallbacks());
+	g_rcBleServer = BLEDevice::createServer();
+	g_rcBleServer->setCallbacks(new ServerCallbacks());
 
 	// Default to deny all mode
-	g_canFilterState.mutex = xSemaphoreCreateMutex();
-	if (g_canFilterState.mutex == nullptr) {
+	g_rcPidFilterState.mutex = xSemaphoreCreateMutex();
+	if (g_rcPidFilterState.mutex == nullptr) {
 		Serial.println("Failed to create RaceChrono filter mutex");
 		return false;
 	}
-	g_canFilterState.allowAll = false;
-	g_canFilterState.allowAllIntervalMs = 0;
-	g_canFilterState.requestedPidCount = 0;
+	g_rcPidFilterState.allowAll = false;
+	g_rcPidFilterState.allowAllIntervalMs = 0;
+	g_rcPidFilterState.requestedPidCount = 0;
 
-	g_filterRequestQueue = xQueueCreate(kFilterRequestQueueSize, sizeof(RcFilterRequest));
+	g_rcPidFilterRequestQueue = xQueueCreate(kFilterRequestQueueSize, sizeof(RcFilterRequest));
 
 	auto* service = createRaceChronoService();
 	createCanMainCharacteristic(service);
@@ -172,25 +172,128 @@ bool initRaceChronoBle() {
 }
 
 /**
- * @brief Returns whether a RaceChrono client is currently connected.
+ * @brief Mark a requested PID as having just been transmitted.
  *
- * Other tasks (for example CAN streaming tasks) can call this helper to
- * determine whether BLE notifications should be sent. If no client is
- * connected there is no reason to push data.
+ * This updates the scheduling state for a specific requested PID by
+ * advancing its `nextDueMs` based on its configured interval. The
+ * operation is protected by the internal mutex to ensure consistency
+ * when accessed from multiple FreeRTOS tasks.
  *
- * @return true if the RaceChrono app is connected to the BLE server.
+ * This function should be called by the notify task after a frame
+ * corresponding to a requested PID has been sent to the client.
+ *
+ * @param index Index of the requested PID in the internal array.
+ * @param now   Current time in milliseconds (typically from `millis()`).
  */
-bool isRaceChronoClientConnected() {
-	return g_connected;
+void CanFilterState::markPidSent(size_t index, uint32_t now) {
+	if (xSemaphoreTake(mutex, portMAX_DELAY) != pdTRUE) {
+		return;
+	}
+
+	if (index < requestedPidCount) {
+		requestedPids[index].nextDueMs =now + requestedPids[index].intervalMs;
+	}
+
+	xSemaphoreGive(mutex);
 }
 
 /**
- * @brief Restart BLE advertising for the RaceChrono service.
+ * @brief Retrieve the next requested PID that is due for transmission.
  *
- * This helper simply restarts advertising using the previously configured
- * service UUID. It can be used if advertising needs to be restarted after
- * a disconnect or after BLE has been temporarily stopped.
+ * Performs a round-robin scan over the current requested PID list and
+ * returns the first PID that is active and due based on its configured
+ * `intervalMs` and `nextDueMs` values. The requested PID cursor is
+ * advanced so subsequent calls continue from the next position.
+ *
+ * The operation is protected by the internal mutex to ensure a consistent
+ * view of the request list when accessed from multiple FreeRTOS tasks.
+ *
+ * @param now                  Current time in milliseconds.
+ * @param requestedPidCursor   In/out cursor for round-robin traversal.
+ * @param outRequestedPid      Output copy of the selected requested PID.
+ * @param outRequestedPidIndex Output index of the selected requested PID.
+ * @return true if a due requested PID was found, false otherwise.
  */
-void raceChronoStartAdvertising() {
-	BLEDevice::startAdvertising();
+bool CanFilterState::nextDuePid(
+	uint32_t now,
+	size_t& requestedPidCursor,
+	RequestedPid& outRequestedPid,
+	size_t& outRequestedPidIndex) const {
+	if (xSemaphoreTake(mutex, portMAX_DELAY) != pdTRUE) {
+		return false;
+	}
+
+	bool found = false;
+
+	if (requestedPidCount > 0) {
+		if (requestedPidCursor >= requestedPidCount) {
+			requestedPidCursor = 0;
+		}
+
+		for (size_t checkedPid = 0; checkedPid < requestedPidCount; ++checkedPid) {
+			const size_t pidIndex = (requestedPidCursor + checkedPid) % requestedPidCount;
+			const RequestedPid& requested = requestedPids[pidIndex];
+
+			if (!requested.active) {
+				continue;
+			}
+
+			if (requested.intervalMs > 0 && now < requested.nextDueMs) {
+				continue;
+			}
+
+			outRequestedPid = requested;
+			outRequestedPidIndex = pidIndex;
+			requestedPidCursor = (pidIndex + 1) % requestedPidCount;
+			found = true;
+			break;
+		}
+	}
+
+	xSemaphoreGive(mutex);
+	return found;
+}
+
+/**
+ * @brief Take a thread-safe snapshot of the current filter configuration.
+ *
+ * This copies the current filter state (allow-all mode, interval, and
+ * requested PID list) into caller-provided buffers. The copy is performed
+ * under a mutex to ensure a consistent view of the state without requiring
+ * the caller to hold the lock.
+ *
+ * This is typically used by the notify task to obtain a stable view of
+ * filter configuration for a single iteration, avoiding prolonged lock
+ * holding while processing or transmitting data.
+ *
+ * @param outAllowAll            Output flag indicating allow-all mode.
+ * @param outAllowAllIntervalMs  Output interval for allow-all mode.
+ * @param outRequestedPids       Output array to receive requested PID entries.
+ * @param outRequestedPidCount   Output number of valid requested PIDs.
+ */
+void CanFilterState::snapshot(
+	bool& outAllowAll,
+	uint16_t& outAllowAllIntervalMs,
+	RequestedPid (&outRequestedPids)[kMaxRequestedPids],
+	size_t& outRequestedPidCount) const {
+	outAllowAll = false;
+	outAllowAllIntervalMs = 0;
+	outRequestedPidCount = 0;
+
+	if (xSemaphoreTake(mutex, portMAX_DELAY) != pdTRUE) {
+		return;
+	}
+
+	outAllowAll = allowAll;
+	outAllowAllIntervalMs = allowAllIntervalMs;
+	outRequestedPidCount = requestedPidCount;
+	if (outRequestedPidCount > kMaxRequestedPids) {
+		outRequestedPidCount = kMaxRequestedPids;
+	}
+
+	for (size_t i = 0; i < outRequestedPidCount; ++i) {
+		outRequestedPids[i] = requestedPids[i];
+	}
+
+	xSemaphoreGive(mutex);
 }
