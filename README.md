@@ -25,8 +25,7 @@ This means the device is already usable for real-time telemetry in RaceChrono.
 
 ### Next Step: High-Rate GPS Integration
 
-The next major milestone is adding high-frequency GPS data support using the ASL GPS bolt-on hardware:
-- https://wiki.autosportlabs.com/Gps-bolt-on
+The next major milestone is adding high-frequency GPS data support using the [ASL GPS bolt-on](https://wiki.autosportlabs.com/Gps-bolt-on)
 
 Planned capabilities:
 - Integrate GPS data alongside CAN telemetry.

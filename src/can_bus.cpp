@@ -15,6 +15,14 @@
 static SPIClass CAN2_SPI(HSPI);
 static MCP_CAN CAN2(&CAN2_SPI, CAN2_CS_PIN);
 
+static bool initCan1();
+static bool initCan2();
+
+bool initCanBus() {
+	Serial.begin(115200);
+	return initCan1() && initCan2();
+}
+
 /**
  * @brief Initialize and start the TWAI (CAN1) driver on the configured pins.
  *
