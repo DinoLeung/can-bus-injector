@@ -51,6 +51,8 @@ extern QueueHandle_t g_rcPidFilterRequestQueue;
 
 extern BLEServer* g_rcBleServer;
 extern BLECharacteristic* g_rcBleMainChar;
+extern BLECharacteristic* g_rcBleGpsMainChar;
+extern BLECharacteristic* g_rcBleGpsTimeChar;
 extern volatile bool g_rcBleConnected;
 
 bool initRaceChronoBle();

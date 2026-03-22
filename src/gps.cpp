@@ -3,12 +3,6 @@
 #include <Arduino.h>
 #include <TinyGPSPlus.h>
 
-constexpr int GPS_UART_RX_PIN = 41;
-constexpr int GPS_UART_TX_PIN = 40;
-constexpr uint32_t GPS_INITIAL_BAUD = 9600;
-constexpr uint32_t GPS_OPERATING_BAUD = 115200;
-constexpr uint8_t SKYTRAQ_BAUD_CODE_115200 = 5;
-
 TinyGPSPlus g_gps;
 
 /**
@@ -87,5 +81,5 @@ void initGps() {
     delay(1000);
 
     Serial1.begin(GPS_OPERATING_BAUD, SERIAL_8N1, GPS_UART_RX_PIN, GPS_UART_TX_PIN);
-    configureSkytraqUpdateRate(25);
+    configureSkytraqUpdateRate(GPS_UPDATE_RATE);
 }

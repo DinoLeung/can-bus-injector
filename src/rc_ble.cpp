@@ -8,6 +8,8 @@
 static BLEService* createRaceChronoService();
 static void createCanMainCharacteristic(BLEService* service);
 static void createCanFilterCharacteristic(BLEService* service);
+static void createGpsMainCharacteristic(BLEService* service);
+static void createGpsTimeCharacteristic(BLEService* service);
 static void startRaceChronoAdvertising();
 
 PidFilterState g_rcPidFilterState;
@@ -15,6 +17,8 @@ QueueHandle_t g_rcPidFilterRequestQueue;
 
 BLEServer* g_rcBleServer;
 BLECharacteristic* g_rcBleMainChar;
+BLECharacteristic* g_rcBleGpsMainChar;
+BLECharacteristic* g_rcBleGpsTimeChar;
 volatile bool g_rcBleConnected;
 
 /**
@@ -77,6 +81,8 @@ class FilterCallbacks : public BLECharacteristicCallbacks {
  *
  * - 0x0001 : CAN main characteristic (READ + NOTIFY)
  * - 0x0002 : CAN filter characteristic (WRITE)
+ * - 0x0003 : GPS main characteristic (READ + NOTIFY)
+ * - 0x0004 : GPS time characteristic (READ + NOTIFY)
  *
  * After the service is started the device begins advertising so the
  * RaceChrono mobile app can discover and connect to it.
@@ -104,6 +110,8 @@ bool initRaceChronoBle() {
 	auto* service = createRaceChronoService();
 	createCanMainCharacteristic(service);
 	createCanFilterCharacteristic(service);
+	createGpsMainCharacteristic(service);
+	createGpsTimeCharacteristic(service);
 
 	service->start();
 	startRaceChronoAdvertising();
@@ -157,6 +165,61 @@ static void createCanFilterCharacteristic(BLEService* service) {
 		BLEUUID(kCanFilterCharUuid),
 		BLECharacteristic::PROPERTY_WRITE);
 	filterChar->setCallbacks(new FilterCallbacks());
+}
+
+/**
+ * @brief Create the RaceChrono GPS main characteristic.
+ *
+ * Per the RaceChrono BLE DIY API, UUID 0x0003 exposes GPS position and motion
+ * data. This characteristic must support READ and NOTIFY so the app can both
+ * poll and receive pushed updates for the latest GPS sample.
+ *
+ * The payload is 20 bytes and contains sync bits and time-from-hour, fix
+ * quality and satellite count, latitude, longitude, altitude, speed, bearing,
+ * HDOP, and VDOP.
+ *
+ * @param service The RaceChrono BLE service that will own the characteristic.
+ */
+static void createGpsMainCharacteristic(BLEService* service) {
+	g_rcBleGpsMainChar = service->createCharacteristic(
+		BLEUUID(kGpsMainCharUuid),
+		BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
+	g_rcBleGpsMainChar->addDescriptor(new BLE2902());
+
+	uint8_t initValue[20] = {
+		0x00, 0x00, 0x00,
+		0x3F,
+		0x7F, 0xFF, 0xFF, 0xFF,
+		0x7F, 0xFF, 0xFF, 0xFF,
+		0xFF, 0xFF,
+		0xFF, 0xFF,
+		0xFF, 0xFF,
+		0xFF,
+		0xFF
+	};
+	g_rcBleGpsMainChar->setValue(initValue, sizeof(initValue));
+}
+
+/**
+ * @brief Create the RaceChrono GPS time characteristic.
+ *
+ * Per the RaceChrono BLE DIY API, UUID 0x0004 exposes the GPS date and hour
+ * packed together with the same 3-bit sync counter used by the GPS main
+ * characteristic. This characteristic must support READ and NOTIFY.
+ *
+ * The payload is 3 bytes wide and is initialized to zero so the characteristic
+ * exists with deterministic contents before valid GPS time is encoded.
+ *
+ * @param service The RaceChrono BLE service that will own the characteristic.
+ */
+static void createGpsTimeCharacteristic(BLEService* service) {
+	g_rcBleGpsTimeChar = service->createCharacteristic(
+		BLEUUID(kGpsTimeCharUuid),
+		BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
+	g_rcBleGpsTimeChar->addDescriptor(new BLE2902());
+
+	uint8_t initValue[3] = {0x00, 0x00, 0x00};
+	g_rcBleGpsTimeChar->setValue(initValue, sizeof(initValue));
 }
 
 /**
