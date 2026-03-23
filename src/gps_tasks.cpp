@@ -3,6 +3,7 @@
 #include <Arduino.h>
 
 #include "gps.h"
+#include "rc_ble.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 

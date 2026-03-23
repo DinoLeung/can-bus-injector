@@ -12,11 +12,11 @@ void setup() {
 	initCanFrameCache();
 
 	initCanBus();
-	initGps();
+	// initGps();
 	initRaceChronoBle();
 	
 	startCanTasks();
-	startGpsTasks();
+	// startGpsTasks();
 	// startSensorTasks();
 	startRaceChronoTasks();
 }

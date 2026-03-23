@@ -10,5 +10,6 @@ static constexpr uint8_t SKYTRAQ_BAUD_CODE_115200 = 5;
 static constexpr uint32_t GPS_UPDATE_RATE = 25;
 
 extern TinyGPSPlus g_gps;
+extern TinyGPSCustom g_vdop;
 
 void initGps();

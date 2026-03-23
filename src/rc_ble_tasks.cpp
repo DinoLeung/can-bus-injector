@@ -2,17 +2,22 @@
 #include <Arduino.h>
 #include "rc_ble.h"
 #include "rc_ble_helper.h"
+#include "gps_helper.h"
 #include "can_frame_cache.h"
 
-// 200Hz
+// 200Hz, it's shared across all the can PIDs
 constexpr TickType_t NotifyInterval = pdMS_TO_TICKS(5);
+// 25Hz
+constexpr TickType_t GpsNotifyInterval = pdMS_TO_TICKS(40);
 
 static void raceChronoCanFilterRequestTask(void*);
 static void raceChronoCanNotifyTask(void*);
+static void raceChronoGpsNotifyTask(void*);
 
 void startRaceChronoTasks() {
-	xTaskCreate(raceChronoCanFilterRequestTask, "RaceChronoNotify", 4096, nullptr, 1, nullptr);
-	xTaskCreate(raceChronoCanNotifyTask, "RaceChronoNotify", 4096, nullptr, 1, nullptr);
+	xTaskCreate(raceChronoCanFilterRequestTask, "RaceChronoCanFilterRequest", 4096, nullptr, 1, nullptr);
+	xTaskCreate(raceChronoCanNotifyTask, "RaceChronoCanNotify", 4096, nullptr, 1, nullptr);
+	// xTaskCreate(raceChronoGpsNotifyTask, "RaceChronoGpsNotify", 4096, nullptr, 1, nullptr);
 }
 
 /**
@@ -184,15 +189,16 @@ static void raceChronoCanNotifyTask(void* pvParameters) {
 		}
 
 		if (hasFrameToSend) {
-			uint8_t payload[13]{};
-			// 4-byte CAN identifier, little-endian
-			payload[0] = static_cast<uint8_t>(framePid & 0xFF);
-			payload[1] = static_cast<uint8_t>((framePid >> 8) & 0xFF);
-			payload[2] = static_cast<uint8_t>((framePid >> 16) & 0xFF);
-			payload[3] = static_cast<uint8_t>((framePid >> 24) & 0xFF);
+			uint8_t payload[13];
+			buildRcCanMainPayload(framePid, frameData, payload);
+			// // 4-byte CAN identifier, little-endian
+			// payload[0] = static_cast<uint8_t>(framePid & 0xFF);
+			// payload[1] = static_cast<uint8_t>((framePid >> 8) & 0xFF);
+			// payload[2] = static_cast<uint8_t>((framePid >> 16) & 0xFF);
+			// payload[3] = static_cast<uint8_t>((framePid >> 24) & 0xFF);
 
-			// 8 data bytes
-			memcpy(&payload[4], frameData, 8);
+			// // 8 data bytes
+			// memcpy(&payload[4], frameData, 8);
 
 			g_rcBleMainChar->setValue(payload, sizeof(payload));
 			g_rcBleMainChar->notify();
@@ -204,5 +210,46 @@ static void raceChronoCanNotifyTask(void* pvParameters) {
 		}
 
 		vTaskDelayUntil(&lastWake, NotifyInterval);
+	}
+}
+
+/**
+ * @brief FreeRTOS task responsible for streaming GPS data over BLE to RaceChrono.
+ *
+ * This task periodically samples the shared TinyGPSPlus parser state and encodes
+ * it into the two RaceChrono GPS characteristics:
+ * - UUID 0x0003: GPS main payload
+ * - UUID 0x0004: GPS date/hour payload
+ *
+ * Both characteristics are updated with the same 3-bit sync counter on every
+ * transmission so the RaceChrono client can match them as one logical sample.
+ *
+ * @param pvParameters Unused FreeRTOS task parameter.
+ */
+static void raceChronoGpsNotifyTask(void* pvParameters) {
+	(void)pvParameters;
+	TickType_t lastWake = xTaskGetTickCount();
+	static uint8_t gpsSyncBits = 0;
+
+	while (true) {
+		if (!g_rcBleConnected || g_rcBleGpsMainChar == nullptr || g_rcBleGpsTimeChar == nullptr) {
+			vTaskDelay(pdMS_TO_TICKS(100));
+			continue;
+		}
+
+		uint8_t gpsMainPayload[20];
+		uint8_t gpsTimePayload[3];
+		const uint8_t currentSyncBits = static_cast<uint8_t>(gpsSyncBits & 0x07);
+		const uint32_t timeField = buildRcGpsTimeField(currentSyncBits);
+		buildRcGpsMainPayload(currentSyncBits, gpsMainPayload);
+		writeBe24(timeField, gpsTimePayload);
+
+		g_rcBleGpsTimeChar->setValue(gpsTimePayload, sizeof(gpsTimePayload));
+		g_rcBleGpsMainChar->setValue(gpsMainPayload, sizeof(gpsMainPayload));
+		g_rcBleGpsTimeChar->notify();
+		g_rcBleGpsMainChar->notify();
+
+		gpsSyncBits = static_cast<uint8_t>((gpsSyncBits + 1) & 0x07);
+		vTaskDelayUntil(&lastWake, GpsNotifyInterval);
 	}
 }

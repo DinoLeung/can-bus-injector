@@ -1,9 +1,13 @@
 #include "gps.h"
 
-#include <Arduino.h>
+// #include <Arduino.h>
+#include <cstring>
+#include <cmath>
+#include <cstdlib>
 #include <TinyGPSPlus.h>
 
 TinyGPSPlus g_gps;
+TinyGPSCustom g_vdop(g_gps, "GPGSA", 17);
 
 /**
  * @brief Sends a SkyTraq binary command packet to the GPS module.
