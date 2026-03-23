@@ -1,6 +1,7 @@
 #pragma once
 
-#include <Arduino.h>
+#include <cstdlib>
+#include "gps_snapshot.h"
 
 enum class RcFilterCommand : uint8_t {
 	DenyAll = 0,
@@ -23,4 +24,5 @@ void writeBe32(const uint32_t value, uint8_t* output);
 
 bool parseFilterRequest(const std::string& value, RcFilterRequest& out);
 void buildRcCanMainPayload(uint32_t framePid, const uint8_t* frameData, uint8_t* outPayload);
-void buildRcGpsMainPayload(uint8_t syncBits, uint8_t* outPayload);
+void buildRcGpsMainPayload(uint8_t syncBits, const GpsSnapshot& gps, uint8_t* outPayload);
+void buildRcGpsTimePayload(uint8_t syncBits, const GpsSnapshot& gps, uint8_t* outPayload);

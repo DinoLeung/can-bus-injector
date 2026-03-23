@@ -1,8 +1,5 @@
 #include "gps.h"
 
-// #include <Arduino.h>
-#include <cstring>
-#include <cmath>
 #include <cstdlib>
 #include <TinyGPSPlus.h>
 
